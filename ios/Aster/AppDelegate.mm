@@ -57,7 +57,7 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
   [AppCenterReactNative register];
   [AppCenterReactNativeAnalytics registerWithInitiallyEnabled:true];
   [AppCenterReactNativeCrashes registerWithAutomaticProcessing];
-  UIView *rootView = RCTAppSetupDefaultRootView(bridge, @"Knock", initProps);
+  UIView *rootView = RCTAppSetupDefaultRootView(bridge, @"Aster", initProps);
 
   if (@available(iOS 13.0, *)) {
     rootView.backgroundColor = [UIColor systemBackgroundColor];
