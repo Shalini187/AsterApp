@@ -8,6 +8,53 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:869234386607:android:7be154b9a15319e5bf965a",
+        "android_client_info": {
+          "package_name": "com.aster.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "869234386607-1qf4653a488joubjcer1rn1tho2u87hu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aster.app",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "869234386607-7ldm51026tdq9kej71tm7ucvr4a6r4mk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChnKoQponkgcDRrkt6UP4r84MlGXjcTNs"
+        },
+        {
+          "current_key": "AIzaSyB5L3s9pi3giir9J_IcLbfhrqj7Avkubfc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "869234386607-7ldm51026tdq9kej71tm7ucvr4a6r4mk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "869234386607-jg9mrkp6eqtql1iu79h150qdijof6vo6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.SenseHawk"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:869234386607:android:8a6eeddb012a7b3dbf965a",
         "android_client_info": {
           "package_name": "com.mycaptain.chatapp"
