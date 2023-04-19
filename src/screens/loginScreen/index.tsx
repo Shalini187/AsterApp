@@ -37,7 +37,7 @@ const LoginScreen = ({ navigation }: any) => {
                         <Layout style={{ flex: 1, top: "8%" }}>
                             <KeyboardAvoidingView behavior={"position"}>
                                 <Layout style={box1}>
-                                    <Text style={{ ...text, fontFamily: fontFamily.proximaExtraBold }}>Welcome to Knock!</Text>
+                                    <Text style={{ ...text, fontFamily: fontFamily.proximaExtraBold }}>Welcome to AsterMovie!</Text>
                                     <Image resizeMode={"cover"} style={img} source={require('../../assets/images/logo.webp')} />
                                 </Layout>
                                 <Layout style={box2}>

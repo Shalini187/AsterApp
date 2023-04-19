@@ -92,7 +92,7 @@ export const loginStyles = StyleSheet.create({
     img: {
         width: 200,
         height: 200,
-        borderRadius: moderateScale(100)
+        borderRadius: moderateScale(24)
     },
     box1: {
         alignItems: "center",
