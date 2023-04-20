@@ -7,7 +7,6 @@ interface Iloader {
     withModal?: boolean;
 }
 
-
 const Loader = (prop: Iloader) => {
     const { isLoading, withModal } = prop || {};
 

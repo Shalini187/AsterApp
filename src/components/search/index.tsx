@@ -1,10 +1,10 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { KeyboardAvoidingView, TouchableOpacity } from "react-native";
-import { Icon, Input, Layout } from '@ui-kitten/components';
+import { Icon, Input } from '@ui-kitten/components';
 
 import { searchStyle } from '../../styles';
-import { COLORS, hitSlop } from "../../constants";
-import { useSelector } from "react-redux";
+import { hitSlop } from "../../constants";
 
 interface ISearch {
     value: string;

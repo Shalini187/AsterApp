@@ -30,9 +30,11 @@ export const onChangeTheme = (data) => {
 export const getToken = async () => {
   const querySanp = await firestore().collection('production').get();
   const data = querySanp.docs.map((docSnap) => docSnap.data());
-  dispatch({
-    type: types.TOKEN,
-    payload: data,
+  setItem("Token", data).then((suc) => {
+    dispatch({
+      type: types.TOKEN,
+      payload: data,
+    });
   });
 };
 
@@ -40,13 +42,13 @@ export const logoutHandler = async () => {
   dispatch({
     type: types.CLEAR_REDUX_STATE,
   });
-  removeItem("UserData").then(() => {
-    auth()?.signOut()?.then(() => {
-      console.log('--------------------------------')
-      console.log('sign out');
-      console.log('--------------------------------')
-    }).catch((error) => {
-    });
+  removeItem("UserData");
+  removeItem("Token");
+  auth()?.signOut()?.then(() => {
+    console.log('--------------------------------')
+    console.log('sign out');
+    console.log('--------------------------------')
+  }).catch((error) => {
   });
   checkTheme();
 };

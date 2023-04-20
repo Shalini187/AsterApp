@@ -1,26 +1,26 @@
 import { Icon, Layout, Text } from "@ui-kitten/components";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Alert, FlatList, RefreshControl, TouchableOpacity } from "react-native";
-import { BottomUpRawSheet, HeaderBar, Loader, SystemModal, ThemeProvider, WrapperContainer } from "../../components";
+import { FlatList, RefreshControl, TouchableOpacity } from "react-native";
+import { BottomUpRawSheet, HeaderBar, Loader, ThemeProvider, WrapperContainer } from "../../components";
 import { COLORS, fontFamily, moderateScale } from "../../constants";
-import { docGroupId, getGroups, getLoginUsers, getUsers, titleWords } from "../../utils";
+import { getGroups, getLoginUsers, getUsers, titleWords } from "../../utils";
 import { chatStyles } from '../../styles';
 import { useSelector } from "react-redux";
 import firestore from '@react-native-firebase/firestore';
+import { getRequest } from "../../services/api";
+import { GET_POPULAR_LIST } from "../../services/urls";
 
 let { text, mycard, subText } = chatStyles || {};
 
 const SearchScreen = ({ navigation, route }: any) => {
-    const { userData, theme } = useSelector((state: any) => state.auth);
+    const { userData, theme, token } = useSelector((state: any) => state.auth);
 
     const sheetRef: any = useRef();
 
     const [users, setUsers] = useState<any>(null);
     const [backupGroups, setBackupGroups] = useState<any>(null);
     const [groups, setGroups] = useState<any>(null);
-    const [groupName, setGroupName] = useState<string>("");
     const [visible, setVisible] = useState<boolean>(false);
-    const [isModal, setModal] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [refresh, setRefresh] = useState<boolean>(false);
     const [loginUser, setLoginUser] = useState<any>('');
@@ -44,12 +44,10 @@ const SearchScreen = ({ navigation, route }: any) => {
         setGroups(filterGroup);
     }, [checkItems]);
 
-    const init = () => {
-        getUsers(setUsers, userData);
-        getGroups((val: any) => {
-            setGroups(val);
-            setBackupGroups(val);
-        }, userData);
+    const init = async () => {
+        let result = await getRequest(token?.[0], GET_POPULAR_LIST);
+        console.log("test===", result);
+    
         setRefresh(false);
     }
 
@@ -78,27 +76,6 @@ const SearchScreen = ({ navigation, route }: any) => {
         }
     }, []);
 
-    const onVisible = () => {
-        if (checkItems?.length <= 1) return Alert.alert("Select more then one contacts to create a group");
-        const groupId = docGroupId(userData);
-        setLoading(true);
-        try {
-            let payload = {
-                name: `${groupName}`,
-                usersList: [...checkItems, userData?.uid],
-                uid: groupId
-            }
-            firestore().collection('groups').doc(groupId).set({ ...payload });
-        } catch (error: any) {
-            console.error(error);
-        }
-        setTimeout(() => {
-            setLoading(false);
-            navigation.goBack();
-            setVisible(false);
-        }, 2000);
-    }
-
     const updateGroup = () => {
         setLoading(true);
         groups?.map((i: any) => {
@@ -120,12 +97,6 @@ const SearchScreen = ({ navigation, route }: any) => {
             navigation.goBack();
             setVisible(false);
         }, 1000);
-    }
-
-    const onAddExistingGroup = () => {
-        if (!checkItems?.length) return Alert.alert("Select more then one contacts to create a group");
-        sheetRef?.current?.open();
-        setVisible(false);
     }
 
     const RenderCard = ({ item, index }: any) => {
@@ -246,23 +217,6 @@ const SearchScreen = ({ navigation, route }: any) => {
                                     keyExtractor={(item) => item.uid}
                                 />
                             </Layout>
-                            <SystemModal
-                                modalVisible={visible}
-                                setModalVisible={setVisible}
-                                onCreate={() => {
-                                    setVisible(false);
-                                    setModal(true);
-                                }}
-                                onAddExisting={onAddExistingGroup}
-                            />
-                            <SystemModal
-                                modalVisible={isModal}
-                                setModalVisible={setModal}
-                                onCreate={onVisible}
-                                children={<></>}
-                                setGroupName={setGroupName}
-                                groupName={groupName}
-                            />
                             <BottomUpRawSheet
                                 sheetRef={sheetRef}
                                 sheetHeight={moderateScale(368)}

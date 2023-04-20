@@ -1,7 +1,7 @@
 import { Icon, Layout, Text } from "@ui-kitten/components";
 import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, Keyboard, RefreshControl, TouchableOpacity } from "react-native";
-import { HeaderBar, SystemSearch, ThemeProvider, WrapperContainer } from "../../components";
+import { HeaderBar, ShimmerEffect, SystemSearch, ThemeProvider, WrapperContainer } from "../../components";
 import { COLORS, fontFamily, hitSlop, moderateScale, textScale } from "../../constants";
 import { getGroups, getLoginUsers, getUsers, searchOptions, signOut, titleWords } from "../../utils";
 import { chatStyles } from '../../styles';
@@ -10,13 +10,16 @@ import navigationString from "../../utils/navigationString";
 import { onChangeTheme } from "../../redux/actions/auth";
 import { useFocusEffect } from "@react-navigation/native";
 import Fuse from "fuse.js";
+import { getRequest } from "../../services/api";
+import { API_IMAGE, GET_POPULAR_LIST } from "../../services/urls";
+import FastImage from "react-native-fast-image";
 
 let _ = require("lodash");
 
 let { text, mycard, subText } = chatStyles || {};
 
-const ChatScreen = ({ navigation, route }: any) => {
-    const { userData, theme } = useSelector((state: any) => state.auth);
+const MainScreen = ({ navigation, route }: any) => {
+    const { userData, theme, token } = useSelector((state: any) => state.auth);
     let fontColor = (theme != "dark") ? "#002885" : "#F2F8FF";
 
     const [search, setSearch] = useState<string>("");
@@ -28,6 +31,14 @@ const ChatScreen = ({ navigation, route }: any) => {
     const [refresh, setRefresh] = useState<boolean>(false);
     const [loginUser, setLoginUser] = useState<any>('');
     const [isKeyboardOpen, setIsKeyboardOpen] = useState<boolean>(false);
+
+    const [movieState, setMovieData] = useState<any>({
+        page: 1, movieData: []
+    });
+
+    const { page, movieData } = movieState || {};
+
+    console.log("moiew", movieData, token)
 
     useFocusEffect(
         useCallback(() => {
@@ -54,18 +65,18 @@ const ChatScreen = ({ navigation, route }: any) => {
     }, []);
 
     const onUpdate = (data: any) => {
-        setBackup((state: any) => ({ ...state, ...data }));
+        setMovieData((state: any) => ({ ...state, ...data }));
     };
 
-    const init = () => {
-        getUsers((v: any) => {
-            setUsers(v);
-            onUpdate({ users: v });
-        }, userData);
-        getGroups((v: any) => {
-            setGroups(v);
-            onUpdate({ groups: v });
-        }, userData);
+    const init = async () => {
+        try {
+            let response: any = await getRequest(GET_POPULAR_LIST);
+            if (response?.results?.length) {
+                onUpdate({ movieData: response?.results, page: response?.page });
+            }
+        } catch (e) {
+            console.log(e);
+        }
         setRefresh(false);
     }
 
@@ -97,21 +108,31 @@ const ChatScreen = ({ navigation, route }: any) => {
     };
 
     const RenderCard = ({ item, index }: any) => {
-        let { name, uid, status } = item || {};
+        let { name, uid, status, original_title, poster_path } = item || {};
 
         return (
             <TouchableOpacity key={index} onPress={() => {
                 navigation.navigate(navigationString.DETAILSCREEN, {
-                    name, uid,
+                    name: original_title, uid,
                     status: typeof (status) == "string" ? status : status?.toDate().toString() ?? ""
                 });
             }}>
+                <ShimmerEffect />
+                <FastImage
+                    style={{
+                        height: moderateScale(200),
+                        width: moderateScale(110),
+                        borderRadius: moderateScale(16),
+                        resizeMode: "contain",
+                    }}
+                    
+                    onLoadStart={() => setLoading(true)}
+                    onLoadEnd={() => setLoading(false)}
+                    source={{ uri: `${API_IMAGE}` + `${poster_path}` }}
+                />
                 <Layout style={mycard} level="2">
-                    <Layout level={"4"} style={{ height: 40, width: 40, borderRadius: 100, marginRight: 16 }}>
-                        <Text style={{ fontFamily: fontFamily.helveticaBold, fontSize: moderateScale(12), alignSelf: "center", paddingVertical: moderateScale(12), textTransform: "capitalize" }}>{titleWords(name)}</Text>
-                    </Layout>
                     <Layout level="2">
-                        <Text style={{ ...text, fontFamily: fontFamily.helveticaMedium }}>{name}</Text>
+                        <Text style={{ ...text, fontFamily: fontFamily.helveticaMedium }}>{original_title}</Text>
                         {status ?
                             <Text style={{ ...subText, fontFamily: fontFamily.helveticaRegular, fontSize: 12, color: (status == 'online') ? COLORS.darkGreen : COLORS.red }}>{status}</Text>
                             :
@@ -127,11 +148,19 @@ const ChatScreen = ({ navigation, route }: any) => {
         <ThemeProvider
             children={
                 <WrapperContainer
-                    isLoading={loading}
                     children={
                         <>
                             <Layout style={{ flex: 1 }}>
-                                <HeaderBar headerText={show ? false : loginUser?.[0]?.name} extraProps={{ status: loginUser?.[0]?.status }} rightProps={() => (
+                                <HeaderBar isSearch={() => {
+                                    if (show) {
+                                        return (
+                                            <SystemSearch
+                                                value={search}
+                                                setValue={onChange}
+                                            />
+                                        )
+                                    } else return;
+                                }} headerText={show ? false : loginUser?.[0]?.name} extraProps={{ status: loginUser?.[0]?.status }} rightProps={() => (
                                     <>
                                         <Layout style={{ flexDirection: "row", marginTop: moderateScale(12) }}>
                                             {!show ?
@@ -165,7 +194,7 @@ const ChatScreen = ({ navigation, route }: any) => {
                             </Layout>
                             <Layout style={{ flex: isKeyboardOpen ? 2 : show ? 4 : 7 }}>
                                 <FlatList
-                                    data={_.concat(groups, users)}
+                                    data={movieData}
                                     refreshControl={
                                         <RefreshControl
                                             refreshing={refresh}
@@ -174,11 +203,12 @@ const ChatScreen = ({ navigation, route }: any) => {
                                             }}
                                         />
                                     }
+                                    listKey={'A'}
                                     numColumns={3}
-                                    columnWrapperStyle = {{ justifyContent: "space-between", padding: moderateScale(16) }}
+                                    columnWrapperStyle={{ justifyContent: "space-between", padding: moderateScale(16) }}
                                     ListHeaderComponent={() => {
                                         return (
-                                            <Text style={{ fontFamily: fontFamily.proximaBold, fontSize: textScale(18), alignSelf: "flex-start", marginHorizontal: moderateScale(16), marginBottom: moderateScale(16)  }}>
+                                            <Text style={{ fontFamily: fontFamily.proximaBold, fontSize: textScale(18), alignSelf: "flex-start", marginHorizontal: moderateScale(16), marginBottom: moderateScale(16) }}>
                                                 {`What's Popular 🎬 `}
                                             </Text>
                                         )
@@ -189,13 +219,13 @@ const ChatScreen = ({ navigation, route }: any) => {
                                         )
                                     }}
                                     renderItem={({ item, index }) => { return <RenderCard item={item} index={index} /> }}
-                                    keyExtractor={(item) => item?.uid}
+                                    keyExtractor={(item) => item?.title}
                                 />
                             </Layout>
                             <Layout level={'4'} style={{ borderRadius: moderateScale(100), alignSelf: "flex-end", margin: moderateScale(16) }}>
                                 <TouchableOpacity
                                     onPress={() => {
-                                        navigation.navigate(navigationString.CONTACTSCREEN);
+                                        navigation.navigate(navigationString.DETAILSCREEN);
                                     }}
                                     style={{ padding: moderateScale(8), alignSelf: "center", width: moderateScale(50), height: moderateScale(50) }}>
                                     <Icon
@@ -213,4 +243,4 @@ const ChatScreen = ({ navigation, route }: any) => {
     )
 }
 
-export default ChatScreen;
+export default MainScreen;

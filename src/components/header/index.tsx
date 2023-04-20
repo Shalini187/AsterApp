@@ -19,8 +19,7 @@ interface IHeader {
 const HeaderBar = (props: IHeader) => {
     const { theme } = useSelector((state: any) => state.auth);
 
-    const { isSearch = false, leftString = false, headerText, isBack, onTap, rightProps, onTitleCallback, extraProps } = props || {};
-    const { status } = extraProps || {};
+    const { isSearch = false, leftString = false, headerText, isBack, onTap, rightProps, onTitleCallback } = props || {};
 
     let colorStyle = (theme == "dark") ? "#F2F8FF" : "#002885";
     let fontColor = (theme == "dark") ? "#002885" : "#F2F8FF";

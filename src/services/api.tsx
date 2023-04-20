@@ -1,3 +1,4 @@
+import { getItem } from "../cache";
 import { logoutHandler } from "../redux/actions/auth";
 
 export const options: any = {
@@ -71,43 +72,58 @@ export const responseJson = (response: any) => {
     });
 }
 
-export const postRequest = ( token: any, url: string, data: any) => {
-    const postOptions = {
-        ...options,
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-            Authorization: token?.TOKEN
+export const postRequest = async (url: string, data: any) => {
+    try {
+        let token: any = await getItem("Token");
+        const postOptions = {
+            ...options,
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+                Authorization: token?.[0]?.TOKEN
+            }
         }
-    }
-    if (!!token?.TOKEN) {
-        return fetch(url, postOptions).then(responseJson);
+        if (!!token?.[0]?.TOKEN) {
+            return fetch(url + `?api_key=${token?.[0]?.API_KEY}`, postOptions).then(responseJson);
+        }
+    } catch (e: any) {
+        console.log(e)
     }
 }
 
-export const getRequest = (token: any, url: string) => {
-    const getOptions = {
-        ...options,
-        method: "GET",
-        // headers: {
-        //     Authorization: token?.TOKEN
-        // }
-    };
-    console.log("yyy", getOptions, url+`?api_key=${token?.API_KEY}`)
-    if (!!token?.TOKEN) {
-        return fetch(url+`?api_key=${token?.API_KEY}`, getOptions).then(responseJson);
+export const getRequest = async (url: string) => {
+    try {
+        let token: any = await getItem("Token");
+        const getOptions = {
+            ...options,
+            method: "GET",
+            headers: {
+                Authorization: token?.[0]?.TOKEN
+            }
+        };
+        console.log("cxcx", token)
+        if (!!token?.[0]?.TOKEN) {
+            return fetch(url + `?api_key=${token?.[0]?.API_KEY}`, getOptions).then(responseJson);
+        }
+    } catch (e: any) {
+        console.log(e)
     }
 }
 
-export const getQueryRequest = (token: any, url: string, queryString: any) => {
-    const getOptions = {
-        ...options,
-        method: "GET",
-        headers: {
-            Authorization: token?.TOKEN
+export const getQueryRequest = async (url: string, queryString: any) => {
+    try {
+        let token: any = await getItem("Token");
+        const getOptions = {
+            ...options,
+            method: "GET",
+            headers: {
+                Authorization: token?.[0]?.TOKEN
+            }
         }
-    }
-    if (!!token?.TOKEN) {
-        return fetch(url + `?${queryString}`, getOptions).then(responseJson);
+        if (!!token?.[0]?.TOKEN) {
+            return fetch(url + `?api_key=${token?.[0]?.API_KEY}` + `?${queryString}`, getOptions).then(responseJson);
+        }
+    } catch (e: any) {
+        console.log(e)
     }
 }

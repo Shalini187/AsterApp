@@ -58,7 +58,7 @@ export const searchStyle = StyleSheet.create({
     centeredView: {
         flex: 1,
         width: '100%',
-        marginTop: moderateScale(30),
+        marginTop: moderateScale(54),
         borderRadius: 30,
         position: 'absolute',
         flexDirection: 'row',
