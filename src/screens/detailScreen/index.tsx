@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import Fuse from "fuse.js";
 
 
-const ChatSectionScreen = ({ navigation, route }: any) => {
+const DetailScreen = ({ navigation, route }: any) => {
     const { userData, theme } = useSelector((state: any) => state.auth);
 
     let colorStyle = (theme == "dark") ? "#F2F8FF" : "#002885";
@@ -172,4 +172,4 @@ const ChatSectionScreen = ({ navigation, route }: any) => {
     )
 }
 
-export default ChatSectionScreen;
+export default DetailScreen ;

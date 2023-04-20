@@ -8,7 +8,7 @@ interface IBottom {
   type?: string;
   children?: JSX.Element;
   sheetRef?: Function;
-  sheetHeight?: Float64Array;
+  sheetHeight?: any;
   onClose?: Function;
   backgroundColor?: string;
 }

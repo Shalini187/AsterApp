@@ -1,7 +1,7 @@
-import ChatScreen from './chatScreen';
+import MainScreen from './mainScreen';
 import LoginScreen from './loginScreen';
 import SignupScreen from './signUpScreen';
-import ContactScreen from './contactScreen';
-import ChatSectionScreen from './chatSectionScreen';
+import SearchScreen from './searchScreen';
+import DetailScreen from './detailScreen';
 
-export { ChatScreen, LoginScreen, SignupScreen, ChatSectionScreen, ContactScreen }
+export { SearchScreen, LoginScreen, SignupScreen, DetailScreen, MainScreen }

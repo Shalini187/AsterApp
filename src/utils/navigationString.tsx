@@ -2,8 +2,7 @@ export default {
     LOGIN: "LoginScreen",
     SIGNUP: "SignUpScreen",
 
+    SEARCHSCREEN: "SearchScreen",
     DETAILSCREEN: "DetailScreen",
-    CHATSCREEN: "ChatScreen",
-    HOMETABMAIN: "HomeTabMain",
-    CONTACTSCREEN: "ContactScreen"
+    MAINSCREEN: "MainScreen"
 };

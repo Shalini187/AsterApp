@@ -21,10 +21,10 @@ const options: any = {
 
 export default function MainStack() {
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={navigationStrings.CHATSCREEN}>
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={navigationStrings.MAINSCREEN}>
             <Stack.Screen
-                name={navigationStrings.CHATSCREEN}
-                component={Screens.ChatScreen}
+                name={navigationStrings.MAINSCREEN}
+                component={Screens.MainScreen}
                 options={{
                     headerShown: false,
                     ...options,
@@ -32,15 +32,15 @@ export default function MainStack() {
             />
              <Stack.Screen
                 name={navigationStrings.DETAILSCREEN}
-                component={Screens.ChatSectionScreen}
+                component={Screens.DetailScreen}
                 options={{
                     headerShown: false,
                     ...options,
                 }}
             />
             <Stack.Screen
-                name={navigationStrings.CONTACTSCREEN}
-                component={Screens.ContactScreen}
+                name={navigationStrings.SEARCHSCREEN}
+                component={Screens.SearchScreen}
                 options={{
                     headerShown: false,
                     ...options,

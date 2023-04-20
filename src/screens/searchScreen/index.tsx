@@ -10,7 +10,7 @@ import firestore from '@react-native-firebase/firestore';
 
 let { text, mycard, subText } = chatStyles || {};
 
-const ContactScreen = ({ navigation, route }: any) => {
+const SearchScreen = ({ navigation, route }: any) => {
     const { userData, theme } = useSelector((state: any) => state.auth);
 
     const sheetRef: any = useRef();
@@ -325,4 +325,4 @@ const ContactScreen = ({ navigation, route }: any) => {
     )
 }
 
-export default ContactScreen;
+export default SearchScreen;
