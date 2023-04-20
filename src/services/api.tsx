@@ -1,6 +1,4 @@
-import { getUserData } from "../cache";
 import { logoutHandler } from "../redux/actions/auth";
-import * as urls from "./urls";
 
 export const options: any = {
     credentials: "include",
@@ -9,18 +7,6 @@ export const options: any = {
         "Content-Type": "application/json",
     },
 };
-
-export const getAccessToken = () => {
-    return new Promise((resolve, reject) => {
-        getUserData().then((res: any) => {
-            if (res?.access_token) {
-                resolve(res?.access_token);
-            }
-            resolve("");
-        });
-    });
-};
-
 
 export const responseJson = (response: any) => {
     return new Promise((resolve, reject) => {
@@ -85,218 +71,43 @@ export const responseJson = (response: any) => {
     });
 }
 
-
-/**
- *
- * @param {*} userId
- * @returns
- */
-export const signinUser = (data: any) => {
-    return fetch(urls.GOOGLE_SIGNIN, {
+export const postRequest = ( token: any, url: string, data: any) => {
+    const postOptions = {
+        ...options,
         method: "POST",
         body: JSON.stringify(data),
+        headers: {
+            Authorization: token?.TOKEN
+        }
+    }
+    if (!!token?.TOKEN) {
+        return fetch(url, postOptions).then(responseJson);
+    }
+}
+
+export const getRequest = (token: any, url: string) => {
+    const getOptions = {
         ...options,
-    }).then(responseJson);
-};
+        method: "GET",
+        // headers: {
+        //     Authorization: token?.TOKEN
+        // }
+    };
+    console.log("yyy", getOptions, url+`?api_key=${token?.API_KEY}`)
+    if (!!token?.TOKEN) {
+        return fetch(url+`?api_key=${token?.API_KEY}`, getOptions).then(responseJson);
+    }
+}
 
-
-export const verifyOtp = (data: any) => {
-    console.log("verify OTP", urls.VERIFY_OTP, data)
-    return fetch(urls.VERIFY_OTP, {
-        method: "POST",
-        body: JSON.stringify(data),
+export const getQueryRequest = (token: any, url: string, queryString: any) => {
+    const getOptions = {
         ...options,
-    }).then(responseJson);
-};
-
-
-export const loginUser = (data: any) => {
-    return fetch(urls.LOGIN, {
-        method: "POST",
-        body: JSON.stringify(data),
-        ...options,
-    }).then(responseJson);
-};
-
-
-export const getWorkOrder = (queryString: any = ``) => {
-    return getAccessToken().then((token) => {
-        options.headers.Authorization = token;
-        console.log("uerls", urls.GET_WORK_ORDER, options)
-        return fetch(urls.GET_WORK_ORDER, {
-            method: "GET",
-            ...options,
-        }).then(responseJson);
-    });
-};
-
-export const getTickets = (queryString: any = ``) => {
-    return getAccessToken().then((token) => {
-        options.headers.Authorization = token;
-        return fetch(urls.GET_WORK_TICKETS + `?${queryString}`, {
-            method: "GET",
-            ...options,
-        }).then(responseJson);
-    });
-};
-
-export const postDelete = (data: any) => {
-    return getAccessToken().then((token) => {
-        options.headers.Authorization = token;
-        console.log("uerls", urls.POST_DELETE, data, options)
-        return fetch(urls.POST_DELETE, {
-            method: "PUT",
-            body: JSON.stringify(data),
-            ...options,
-        }).then(responseJson);
-    });
-};
-
-
-export const putUpdate = (data: any) => {
-    return getAccessToken().then((token) => {
-        options.headers.Authorization = token;
-        return fetch(urls.PUT_UPDATE, {
-            method: "PUT",
-            body: JSON.stringify(data),
-            ...options,
-        }).then(responseJson);
-    });
-};
-
-
-export const postComplete = (data: any) => {
-    return getAccessToken().then((token) => {
-        const options: any = {
-            credentials: "include",
-            headers: {
-                Accept: "*/*",
-                Authorization: token,
-                "Content-Type": "multipart/form-data",
-            },
-        };
-        console.log("uerls", urls.PUT_WORK_COMPLETE, data, options)
-        return fetch(urls.PUT_WORK_COMPLETE, {
-            method: "PUT",
-            body: data,
-            ...options,
-        }).then(responseJson);
-    });
-};
-
-export const postCreate = (data: any) => {
-    return getAccessToken().then((token) => {
-        options.headers.Authorization = token;
-        console.log("uerls", urls.POST_CREATE, data, options)
-        return fetch(urls.POST_CREATE, {
-            method: "POST",
-            body: JSON.stringify(data),
-            ...options,
-        }).then(responseJson);
-    });
-};
-
-
-export const postAssign = (data: any) => {
-    return getAccessToken().then((token) => {
-        options.headers.Authorization = token;
-        console.log("uerls", urls.POST_ASSIGN, data, options)
-        return fetch(urls.POST_ASSIGN, {
-            method: "POST",
-            body: JSON.stringify(data),
-            ...options,
-        }).then(responseJson);
-    });
-};
-
-export const getUsers = () => {
-    return getAccessToken().then((token) => {
-        options.headers.Authorization = token;
-        console.log("uerls", urls.GET_USERS, options)
-        return fetch(urls.GET_USERS, {
-            method: "GET",
-            ...options,
-        }).then(responseJson);
-    });
-};
-
-export const getWoTech = () => {
-    return getAccessToken().then((token) => {
-        options.headers.Authorization = token;
-
-        return fetch(urls.GET_WO_TECH, {
-            method: "GET",
-            ...options,
-        }).then(responseJson);
-    });
-};
-
-export const getDepartment = () => {
-    return getAccessToken().then((token) => {
-        options.headers.Authorization = token;
-
-        return fetch(urls.GET_DEPARTMENT, {
-            method: "GET",
-            ...options,
-        }).then(responseJson);
-    });
-};
-
-export const getProfile = () => {
-    return getAccessToken().then((token) => {
-        options.headers.Authorization = token;
-
-        return fetch(urls.GET_PROFILE, {
-            method: "GET",
-            ...options,
-        }).then(responseJson);
-    });
-};
-
-export const postProfile = (data: any) => {
-    return getAccessToken().then((token) => {
-        options.headers.Authorization = token;
-        console.log("uerls", urls.POST_PROFILE, data, options)
-        return fetch(urls.POST_PROFILE, {
-            method: "POST",
-            body: JSON.stringify(data),
-            ...options,
-        }).then(responseJson);
-    });
-};
-
-export const postReport = (data: any) => {
-    return getAccessToken().then((token) => {
-        options.headers.Authorization = token;
-        console.log("uerls", urls.POST_REPORT, data, options)
-        return fetch(urls.POST_REPORT, {
-            method: "POST",
-            body: JSON.stringify(data),
-            ...options,
-        }).then(responseJson);
-    });
-};
-
-
-export const isSignOut = (data: any) => {
-    return getAccessToken().then((token) => {
-        options.headers.Authorization = token;
-        console.log("uerls", urls.LOGOUT, data, options)
-        return fetch(urls.LOGOUT, {
-            method: "POST",
-            body: JSON.stringify(data),
-            ...options,
-        }).then(responseJson);
-    });
-};
-
-
-export const getCommentOptions = (queryString: any) => {
-    return getAccessToken().then((token) => {
-        options.headers.Authorization = token;
-        return fetch(urls.GET_COMMENTOPTIONS + `?${queryString}`, {
-            method: "GET",
-            ...options,
-        }).then(responseJson);
-    });
-};
+        method: "GET",
+        headers: {
+            Authorization: token?.TOKEN
+        }
+    }
+    if (!!token?.TOKEN) {
+        return fetch(url + `?${queryString}`, getOptions).then(responseJson);
+    }
+}

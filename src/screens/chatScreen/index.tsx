@@ -131,18 +131,9 @@ const ChatScreen = ({ navigation, route }: any) => {
                     children={
                         <>
                             <Layout style={{ flex: 1 }}>
-                                <HeaderBar isBack={false} isSearch={() => {
-                                    if (show) {
-                                        return (
-                                            <SystemSearch
-                                                value={search}
-                                                setValue={onChange}
-                                            />
-                                        )
-                                    } else return;
-                                }} headerText={show ? false : loginUser?.[0]?.name} extraProps={{ status: loginUser?.[0]?.status }} rightProps={() => (
+                                <HeaderBar headerText={show ? false : loginUser?.[0]?.name} extraProps={{ status: loginUser?.[0]?.status }} rightProps={() => (
                                     <>
-                                        <Layout style={{ flexDirection: "row" }}>
+                                        <Layout style={{ flexDirection: "row", marginTop: moderateScale(12) }}>
                                             {!show ?
                                                 <>
                                                     <TouchableOpacity hitSlop={hitSlop} onPress={() => signOut(userData, setLoading)}>
@@ -172,7 +163,7 @@ const ChatScreen = ({ navigation, route }: any) => {
                                     </>
                                 )} />
                             </Layout>
-                            <Layout style={{ flex: isKeyboardOpen ? 2 : show ? 6 : 8 }}>
+                            <Layout style={{ flex: isKeyboardOpen ? 2 : show ? 4 : 7 }}>
                                 <FlatList
                                     data={_.concat(groups, users)}
                                     refreshControl={
@@ -183,6 +174,15 @@ const ChatScreen = ({ navigation, route }: any) => {
                                             }}
                                         />
                                     }
+                                    numColumns={3}
+                                    columnWrapperStyle = {{ justifyContent: "space-between", padding: moderateScale(16) }}
+                                    ListHeaderComponent={() => {
+                                        return (
+                                            <Text style={{ fontFamily: fontFamily.proximaBold, fontSize: textScale(18), alignSelf: "flex-start", marginHorizontal: moderateScale(16), marginBottom: moderateScale(16)  }}>
+                                                {`What's Popular 🎬 `}
+                                            </Text>
+                                        )
+                                    }}
                                     ListEmptyComponent={() => {
                                         return (
                                             <Text style={{ fontFamily: fontFamily.proximaBold, fontSize: textScale(20), alignSelf: "center", paddingVertical: "50%" }}>{`Let's Start!!!! 🎬 `}</Text>

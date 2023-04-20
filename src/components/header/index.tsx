@@ -44,8 +44,7 @@ const HeaderBar = (props: IHeader) => {
                                     <Text style={{ fontFamily: fontFamily.proximaBold, textTransform: "capitalize", alignSelf: "center", padding: moderateScale(14), color: fontColor }}>{titleWords(headerText)}</Text>
                                 </Layout>
                                 <Layout>
-                                    <Text style={{ fontSize: textScale(18), fontFamily: fontFamily.proximaMedium, textTransform: "capitalize" }}>{headerText}</Text>
-                                    <Text style={{ fontSize: textScale(12), color: (status == 'online') ? COLORS.darkGreen : COLORS.red, fontFamily: fontFamily.proximaMedium }}>{status}</Text>
+                                    <Text style={{ fontSize: textScale(24), fontFamily: fontFamily.helveticaBold, textTransform: "capitalize", marginTop: moderateScale(8) }}>{"Discover"}</Text>
                                 </Layout>
                             </TouchableOpacity>
                             :

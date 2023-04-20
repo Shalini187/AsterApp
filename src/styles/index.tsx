@@ -1,5 +1,5 @@
 import { Dimensions, StyleSheet } from "react-native";
-import { fontFamily, moderateScale, moderateScaleVertical, textScale } from "../constants";
+import { fontFamily, moderateScale, moderateScaleVertical, textScale, width } from "../constants";
 
 export const imageStyle = StyleSheet.create({
     container: {
@@ -116,9 +116,10 @@ export const chatStyles = StyleSheet.create({
         fontSize: textScale(12)
     },
     mycard: {
-        flexDirection: "row",
-        margin: moderateScale(8),
         padding: moderateScale(8),
+        width: moderateScale(110),
+        height: moderateScale(200),
+        overflow: "hidden",
         borderRadius: moderateScale(16)
     }
 });

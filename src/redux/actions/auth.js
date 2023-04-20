@@ -3,6 +3,7 @@ import { checkTheme } from "../../utils";
 import store from "../store";
 import types from "../types";
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 const { dispatch } = store;
 
@@ -12,6 +13,8 @@ export const onLoginSuccess = (data) => {
       type: types.LOGIN,
       payload: data,
     });
+
+    getToken();
   });
 };
 
@@ -21,6 +24,15 @@ export const onChangeTheme = (data) => {
       type: types.CHANGE_THEME,
       payload: data,
     });
+  });
+};
+
+export const getToken = async () => {
+  const querySanp = await firestore().collection('production').get();
+  const data = querySanp.docs.map((docSnap) => docSnap.data());
+  dispatch({
+    type: types.TOKEN,
+    payload: data,
   });
 };
 
