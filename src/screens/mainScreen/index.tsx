@@ -9,7 +9,6 @@ import { useSelector } from "react-redux";
 import navigationString from "../../utils/navigationString";
 import { onChangeTheme } from "../../redux/actions/auth";
 import { useFocusEffect } from "@react-navigation/native";
-import Fuse from "fuse.js";
 import { getRequest } from "../../services/api";
 import { API_IMAGE, GET_POPULAR_LIST } from "../../services/urls";
 import FastImage from "react-native-fast-image";
@@ -79,20 +78,6 @@ const MainScreen = ({ navigation, route }: any) => {
         setRefresh(false);
     }
 
-    const onChange = (searchText: string) => {
-        setSearch(searchText);
-        const fuseCategory = new Fuse(movieData, searchOptions);
-        let temp = fuseCategory?.search(searchText), dummyArray: any = [];
-        
-        temp?.forEach((item) => { dummyArray?.push(item?.item) });
-
-        onUpdate({ movieData: dummyArray });
-
-        if (!searchText && !dummyArray.length) {
-            onUpdate({ movieData: backData });
-        }
-    };
-
     const RenderCard = ({ item, index }: any) => {
         let { name, uid, status, title, poster_path } = item || {};
         if (!title) return <Layout style={{ ...mycard, backgroundColor: 'transparent' }} />;
@@ -130,16 +115,7 @@ const MainScreen = ({ navigation, route }: any) => {
                     children={
                         <>
                             <Layout style={{ flex: 1 }}>
-                                <HeaderBar isSearch={() => {
-                                    if (show) {
-                                        return (
-                                            <SystemSearch
-                                                value={search}
-                                                setValue={onChange}
-                                            />
-                                        )
-                                    } else return;
-                                }} headerText={show ? false : loginUser?.[0]?.name} extraProps={{ status: loginUser?.[0]?.status }} rightProps={() => (
+                                <HeaderBar headerText={show ? false : loginUser?.[0]?.name} extraProps={{ status: loginUser?.[0]?.status }} rightProps={() => (
                                     <>
                                         <Layout style={{ flexDirection: "row", marginTop: moderateScale(12) }}>
                                             {!show ?

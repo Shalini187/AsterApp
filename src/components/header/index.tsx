@@ -12,13 +12,12 @@ interface IHeader {
     onTitleCallback?: Function | any;
     rightProps?: Function | any;
     extraProps?: any;
-    isSearch?: any;
 }
 
 const HeaderBar = (props: IHeader) => {
     const { theme } = useSelector((state: any) => state.auth);
 
-    const { isSearch = false, headerText, isBack, onTap, rightProps, onTitleCallback } = props || {};
+    const { headerText, isBack, onTap, rightProps, onTitleCallback } = props || {};
 
     let colorStyle = (theme == "dark") ? "#F2F8FF" : "#002885";
     let fontColor = (theme == "dark") ? "#002885" : "#F2F8FF";
@@ -57,7 +56,6 @@ const HeaderBar = (props: IHeader) => {
             <Layout style={{ margin: 16, flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 0 }}>
                 <RenderBack />
                 <RenderTextHeader />
-                {isSearch ? isSearch() : <></> }
                 {rightProps?.() ?? <View />}
             </Layout>
         </Layout>
