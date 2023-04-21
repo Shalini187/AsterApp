@@ -7,7 +7,7 @@ import firestore from '@react-native-firebase/firestore';
 
 const { dispatch } = store;
 
-export const onLoginSuccess = (data) => {
+export const onLoginSuccess = (data: any) => {
   setItem("UserData", data).then((suc) => {
     dispatch({
       type: types.LOGIN,
@@ -18,7 +18,7 @@ export const onLoginSuccess = (data) => {
   });
 };
 
-export const onChangeTheme = (data) => {
+export const onChangeTheme = (data: any) => {
   setItem("Theme", data).then((suc) => {
     dispatch({
       type: types.CHANGE_THEME,

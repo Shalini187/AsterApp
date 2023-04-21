@@ -9,7 +9,7 @@ const initial_state = {
   data: []
 };
 
-export default function (state = initial_state, action) {
+export default function (state = initial_state, action: any) {
   switch (action.type) {
     case types.API_REQUEST: {
       let { page } = action.payload || {};
@@ -23,7 +23,7 @@ export default function (state = initial_state, action) {
     case types.API_SUCCESS: {
       return {
         ...state,
-        data: [...state.data, ...action.payload.results],
+        data: [...state.data, ...action.payload],
         error: '',
         loading: false,
         moreLoading: false

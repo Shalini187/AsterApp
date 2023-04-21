@@ -1,26 +1,30 @@
 import React from "react";
-import { Layout, Text } from "@ui-kitten/components";
+import { Layout, Spinner, Text } from "@ui-kitten/components";
 import { FlatList, RefreshControl, TouchableOpacity } from "react-native";
 import FastImage from "react-native-fast-image";
 import navigationString from "../../utils/navigationString";
 import { movieStyles } from "../../styles";
-import { formatData } from "../../utils";
 import { API_IMAGE } from "../../services/urls";
+import { useSelector } from "react-redux";
 
 let _ = require("lodash");
 
 interface IMovie {
     data: Array<any>;
-    setRefresh: Function;
-    refresh: boolean;
+    setRefresh?: Function;
+    refresh?: boolean;
     navigation: any;
-    numColumns: number
+    numColumns: number;
+    endReach: any;
 }
 
 const MovieList = (props: IMovie) => {
-    let { data, setRefresh, refresh, navigation, numColumns } = props || {};
+    let { endReach, data, setRefresh = () => { }, refresh = false, navigation, numColumns } = props || {};
+    let { text, mycard, gridStyle, headText, footText, footerCon, imageStyle, footerText_ } = movieStyles || {};
 
-    let { text, mycard, gridStyle, headText, footText, imageStyle } = movieStyles || {};
+    const { isListEnd, moreLoading } = useSelector((state: any) => state.api);
+
+    const windowSize = data?.length > 50 ? data?.length / 4 : 21;
 
     const RenderCard = ({ item, index }: any) => {
         let { title, poster_path } = item || {};
@@ -30,7 +34,7 @@ const MovieList = (props: IMovie) => {
             }}>
                 <FastImage
                     style={imageStyle}
-                    source={{ uri: `${API_IMAGE}` + `${poster_path}` }}
+                    source={{ uri: `${API_IMAGE}` + `${poster_path}`, cache: FastImage.cacheControl.immutable }}
                 />
                 {!!title && <Layout style={mycard} level={"2"}>
                     <Layout level="2">
@@ -44,11 +48,11 @@ const MovieList = (props: IMovie) => {
     return (
         <Layout style={{ flex: 1 }}>
             <FlatList
-                data={formatData(data, numColumns)}
-                listKey={'A'}
+                data={data}
+                listKey={'_' + Math.random().toString(36).substr(2, 9)}
                 numColumns={numColumns}
                 columnWrapperStyle={gridStyle}
-                keyExtractor={(item) => item?.title}
+                keyExtractor={(_, index) => String(index)}
                 showsVerticalScrollIndicator={false}
                 ListHeaderComponent={() => <Text style={headText}>{`What's Popular 🎬 `}</Text>}
                 ListEmptyComponent={() => <Text style={footText}>{`Let's Start!!!! 🏃🏻‍♀️🏃🏻‍♂️`}</Text>}
@@ -61,7 +65,20 @@ const MovieList = (props: IMovie) => {
                         }}
                     />
                 }
+                ListFooterComponent={() => {
+                    return (
+                        <Layout style={footerCon}>
+                            {moreLoading && <Spinner />}
+                            {isListEnd && <Text style={footerText_}>No more articles at the moment</Text>}
+                        </Layout>
+                    )
+                }}
+                disableVirtualization={true}
                 onEndReachedThreshold={0.6}
+                onEndReached={endReach}
+                maxToRenderPerBatch={windowSize}
+                windowSize={windowSize}
+
             />
         </Layout>
     )

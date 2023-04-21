@@ -53,7 +53,7 @@ export let signIn = async (form: {}, setLoading: Function) => {
     }
 }
 
-export let signOut = (user: any, setLoading: Function) => {
+export let signOut = (user: any) => {
     Alert.alert(
         "Are you Sure ?",
         "you need to Sign Off !",
@@ -61,11 +61,9 @@ export let signOut = (user: any, setLoading: Function) => {
             {
                 text: "YES",
                 onPress: () => {
-                    setLoading(true);
                     firestore()?.collection('users')?.doc(user?.uid)?.update({ status: "offline" });
                     setTimeout(() => {
                         logoutHandler();
-                        setLoading(false);
                     }, 1000);
                 },
                 style: 'destructive'
@@ -109,11 +107,11 @@ export const createQueryString = (data: any) => {
 }
 
 export const formatData = (data: any, numColumns: any) => {
-    const numberOfFullRows = Math.floor(data.length / numColumns);
+    const numberOfFullRows = Math.floor(data?.length / numColumns);
 
-    let numberOfElementsLastRow = data.length - (numberOfFullRows * numColumns);
+    let numberOfElementsLastRow = data?.length - (numberOfFullRows * numColumns);
     while (numberOfElementsLastRow !== numColumns && numberOfElementsLastRow !== 0) {
-        data.push({ key: `blank-${numberOfElementsLastRow}`, empty: true });
+        data?.push({ key: `blank-${numberOfElementsLastRow}`, empty: true });
         numberOfElementsLastRow++;
     }
 

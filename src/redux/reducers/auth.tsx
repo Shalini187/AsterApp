@@ -6,7 +6,7 @@ const initial_state = {
   token: ""
 };
 
-export default function (state = initial_state, action) {
+export default function (state = initial_state, action: any) {
   switch (action.type) {
     case types.LOGIN: {
       const data = action.payload;

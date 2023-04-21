@@ -121,7 +121,7 @@ export const getQueryRequest = async (url: string, queryString: any) => {
             }
         }
         if (!!token?.[0]?.TOKEN) {
-            return fetch(url + `?api_key=${token?.[0]?.API_KEY}` + `?${queryString}`, getOptions).then(responseJson);
+            return fetch(url + `?api_key=${token?.[0]?.API_KEY}` + `&${queryString}`, getOptions).then(responseJson);
         }
     } catch (e: any) {
         console.log(e)

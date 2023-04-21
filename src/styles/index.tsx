@@ -147,6 +147,16 @@ export const movieStyles = StyleSheet.create({
         borderTopRightRadius: 0,
         alignItems: "center",
         flex: 1
+    },
+    footerCon: {
+        flex: 1, 
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    footerText_: {
+        fontSize: textScale(12),
+        marginVertical: moderateScale(12),
+        fontFamily: fontFamily.proximaBold
     }
 });
 

@@ -1,10 +1,14 @@
 import { put, takeLatest, all } from "@redux-saga/core/effects";
+import { getQueryRequest } from "../../services/api";
+import { GET_POPULAR_LIST } from "../../services/urls";
 import types from "../types";
+import { createQueryString } from "../../utils";
 
-function* getTopHeadline(headLineRequest: any, payload: any) {
+function* getTopHeadline({ payload }: any) {
     try {
-        const res = yield (headLineRequest(payload))
-        if (res?.results?.length > 0) {
+        const res =  yield (getQueryRequest(GET_POPULAR_LIST, createQueryString(payload)));
+        console.log("Saga Api Call ---> " , res, payload)
+        if (res?.results?.length) {
             yield put({
                 type: types.API_SUCCESS,
                 payload: res?.results
