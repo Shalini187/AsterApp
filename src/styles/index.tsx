@@ -107,8 +107,7 @@ export const loginStyles = StyleSheet.create({
 
 export const chatStyles = StyleSheet.create({
     text: {
-        fontSize: textScale(18),
-        marginLeft: moderateScale(12),
+        fontSize: textScale(16),
         textTransform: "capitalize"
     },
     subText: {
@@ -117,8 +116,8 @@ export const chatStyles = StyleSheet.create({
     },
     mycard: {
         padding: moderateScale(8),
+        paddingTop: moderateScale(24),
         width: moderateScale(110),
-        height: moderateScale(200),
         overflow: "hidden",
         borderRadius: moderateScale(16)
     }

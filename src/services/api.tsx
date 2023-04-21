@@ -75,6 +75,7 @@ export const responseJson = (response: any) => {
 export const postRequest = async (url: string, data: any) => {
     try {
         let token: any = await getItem("Token");
+        
         const postOptions = {
             ...options,
             method: "POST",
@@ -101,7 +102,6 @@ export const getRequest = async (url: string) => {
                 Authorization: token?.[0]?.TOKEN
             }
         };
-        console.log("cxcx", token)
         if (!!token?.[0]?.TOKEN) {
             return fetch(url + `?api_key=${token?.[0]?.API_KEY}`, getOptions).then(responseJson);
         }

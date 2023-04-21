@@ -201,28 +201,31 @@ export const searchOptions = {
     isCaseSensitive: false,
     threshold: 0.3,
     keys: [
-        "name",
-        "uid",
-        "status"
-    ],
-};
-
-export const searchChatOptions = {
-    isCaseSensitive: false,
-    threshold: 0.3,
-    keys: [
-        "sentBy",
-        "sentTo",
-        "text",
-        "user._id",
-        "createdAt"
+        "original_title",
+        "title",
+        "release_date",
+        "vote_count",
+        "vote_average",
+        "overview"
     ],
 };
 
 export const createQueryString = (data: any) => {
     return Object.keys(data)?.map(key => {
-      let val = data[key]
-      if (val !== null && typeof val === 'object') val = createQueryString(val)
-      return `${key}=${encodeURIComponent(`${val}`.replace(/\s/g, '_'))}`
+        let val = data[key]
+        if (val !== null && typeof val === 'object') val = createQueryString(val)
+        return `${key}=${encodeURIComponent(`${val}`.replace(/\s/g, '_'))}`
     }).join('&');
-  }
+}
+
+export const formatData = (data: any, numColumns: any) => {
+    const numberOfFullRows = Math.floor(data.length / numColumns);
+
+    let numberOfElementsLastRow = data.length - (numberOfFullRows * numColumns);
+    while (numberOfElementsLastRow !== numColumns && numberOfElementsLastRow !== 0) {
+        data.push({ key: `blank-${numberOfElementsLastRow}`, empty: true });
+        numberOfElementsLastRow++;
+    }
+
+    return data;
+};

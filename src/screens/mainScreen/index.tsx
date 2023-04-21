@@ -1,9 +1,9 @@
 import { Icon, Layout, Text } from "@ui-kitten/components";
 import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, Keyboard, RefreshControl, TouchableOpacity } from "react-native";
-import { HeaderBar, ShimmerEffect, SystemSearch, ThemeProvider, WrapperContainer } from "../../components";
+import { HeaderBar, SystemSearch, ThemeProvider, WrapperContainer } from "../../components";
 import { COLORS, fontFamily, hitSlop, moderateScale, textScale } from "../../constants";
-import { getGroups, getLoginUsers, getUsers, searchOptions, signOut, titleWords } from "../../utils";
+import { formatData, getLoginUsers, searchOptions, signOut } from "../../utils";
 import { chatStyles } from '../../styles';
 import { useSelector } from "react-redux";
 import navigationString from "../../utils/navigationString";
@@ -16,7 +16,7 @@ import FastImage from "react-native-fast-image";
 
 let _ = require("lodash");
 
-let { text, mycard, subText } = chatStyles || {};
+let { text, mycard } = chatStyles || {};
 
 const MainScreen = ({ navigation, route }: any) => {
     const { userData, theme, token } = useSelector((state: any) => state.auth);
@@ -26,17 +26,16 @@ const MainScreen = ({ navigation, route }: any) => {
     const [show, setShow] = useState<boolean>(false);
     const [users, setUsers] = useState<any>(null);
     const [groups, setGroups] = useState<any>(null);
-    const [backData, setBackup] = useState<any>({ groups: [], users: [] });
     const [loading, setLoading] = useState<boolean>(false);
     const [refresh, setRefresh] = useState<boolean>(false);
     const [loginUser, setLoginUser] = useState<any>('');
     const [isKeyboardOpen, setIsKeyboardOpen] = useState<boolean>(false);
 
     const [movieState, setMovieData] = useState<any>({
-        page: 1, movieData: []
+        page: 1, movieData: [], backData: []
     });
 
-    const { page, movieData } = movieState || {};
+    const { page, movieData, backData } = movieState || {};
 
     console.log("moiew", movieData, token)
 
@@ -72,7 +71,7 @@ const MainScreen = ({ navigation, route }: any) => {
         try {
             let response: any = await getRequest(GET_POPULAR_LIST);
             if (response?.results?.length) {
-                onUpdate({ movieData: response?.results, page: response?.page });
+                onUpdate({ movieData: response?.results, page: response?.page, backData: response?.results });
             }
         } catch (e) {
             console.log(e);
@@ -81,65 +80,45 @@ const MainScreen = ({ navigation, route }: any) => {
     }
 
     const onChange = (searchText: string) => {
-        const { users = [], groups = [] } = backData || {};
         setSearch(searchText);
-
-        const fuseCategory_ = new Fuse(users, searchOptions);
-        const fuseCategory = new Fuse(groups, searchOptions);
-
-        var temp = fuseCategory?.search(searchText);
-        var temp_ = fuseCategory_?.search(searchText);
-
-        let dummyArray: any = [], dummyArray_: any = [];
+        const fuseCategory = new Fuse(movieData, searchOptions);
+        let temp = fuseCategory?.search(searchText), dummyArray: any = [];
+        
         temp?.forEach((item) => { dummyArray?.push(item?.item) });
 
-        temp_?.forEach((item) => { dummyArray_?.push(item?.item) });
-
-        setUsers(dummyArray_);
-        setGroups(dummyArray);
+        onUpdate({ movieData: dummyArray });
 
         if (!searchText && !dummyArray.length) {
-            setGroups(groups);
-        }
-
-        if (!searchText && !dummyArray_.length) {
-            setUsers(users);
+            onUpdate({ movieData: backData });
         }
     };
 
     const RenderCard = ({ item, index }: any) => {
-        let { name, uid, status, original_title, poster_path } = item || {};
-
+        let { name, uid, status, title, poster_path } = item || {};
+        if (!title) return <Layout style={{ ...mycard, backgroundColor: 'transparent' }} />;
         return (
             <TouchableOpacity key={index} onPress={() => {
                 navigation.navigate(navigationString.DETAILSCREEN, {
-                    name: original_title, uid,
+                    name: title, uid,
                     status: typeof (status) == "string" ? status : status?.toDate().toString() ?? ""
                 });
             }}>
-                <ShimmerEffect />
                 <FastImage
                     style={{
                         height: moderateScale(200),
                         width: moderateScale(110),
                         borderRadius: moderateScale(16),
+                        overflow: "hidden", zIndex: 1,
                         resizeMode: "contain",
                     }}
-                    
-                    onLoadStart={() => setLoading(true)}
-                    onLoadEnd={() => setLoading(false)}
                     source={{ uri: `${API_IMAGE}` + `${poster_path}` }}
                 />
-                <Layout style={mycard} level="2">
+                <Layout style={{ ...mycard, borderTopLeftRadius: 0, borderTopRightRadius: 0, marginTop: -16, flex: 1 }} level="2">
                     <Layout level="2">
-                        <Text style={{ ...text, fontFamily: fontFamily.helveticaMedium }}>{original_title}</Text>
-                        {status ?
-                            <Text style={{ ...subText, fontFamily: fontFamily.helveticaRegular, fontSize: 12, color: (status == 'online') ? COLORS.darkGreen : COLORS.red }}>{status}</Text>
-                            :
-                            <Text style={{ ...subText, fontFamily: fontFamily.helveticaRegular, fontSize: 12, color: COLORS.lightGray4 }}>{'Press here to check the group activity'}</Text>
-                        }
+                        <Text style={{ ...text, fontFamily: fontFamily.helveticaMedium }}>{title}</Text>
                     </Layout>
                 </Layout>
+
             </TouchableOpacity>
         )
     }
@@ -194,7 +173,7 @@ const MainScreen = ({ navigation, route }: any) => {
                             </Layout>
                             <Layout style={{ flex: isKeyboardOpen ? 2 : show ? 4 : 7 }}>
                                 <FlatList
-                                    data={movieData}
+                                    data={formatData(movieData, 3)}
                                     refreshControl={
                                         <RefreshControl
                                             refreshing={refresh}
