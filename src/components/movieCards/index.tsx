@@ -23,8 +23,7 @@ const MovieList = (props: IMovie) => {
     let { text, mycard, gridStyle, headText, footText, imageStyle } = movieStyles || {};
 
     const RenderCard = ({ item, index }: any) => {
-        let { empty, title, poster_path } = item || {};
-        if (!!empty) return <Layout style={{ ...mycard, backgroundColor: 'transparent' }} />;
+        let { title, poster_path } = item || {};
         return (
             <TouchableOpacity key={index} onPress={() => {
                 navigation.navigate(navigationString.DETAILSCREEN, { ...item });
@@ -33,12 +32,11 @@ const MovieList = (props: IMovie) => {
                     style={imageStyle}
                     source={{ uri: `${API_IMAGE}` + `${poster_path}` }}
                 />
-                <Layout style={mycard} level={"2"}>
+                {!!title && <Layout style={mycard} level={"2"}>
                     <Layout level="2">
                         <Text style={text}>{title}</Text>
                     </Layout>
-                </Layout>
-
+                </Layout>}
             </TouchableOpacity>
         )
     }
@@ -47,6 +45,14 @@ const MovieList = (props: IMovie) => {
         <Layout style={{ flex: 1 }}>
             <FlatList
                 data={formatData(data, numColumns)}
+                listKey={'A'}
+                numColumns={numColumns}
+                columnWrapperStyle={gridStyle}
+                keyExtractor={(item) => item?.title}
+                showsVerticalScrollIndicator={false}
+                ListHeaderComponent={() => <Text style={headText}>{`What's Popular 🎬 `}</Text>}
+                ListEmptyComponent={() => <Text style={footText}>{`Let's Start!!!! 🏃🏻‍♀️🏃🏻‍♂️`}</Text>}
+                renderItem={({ item, index }) => { return <RenderCard item={item} index={index} /> }}
                 refreshControl={
                     <RefreshControl
                         refreshing={refresh}
@@ -55,18 +61,7 @@ const MovieList = (props: IMovie) => {
                         }}
                     />
                 }
-                listKey={'A'}
-                showsVerticalScrollIndicator={false}
-                numColumns={numColumns}
-                columnWrapperStyle={gridStyle}
-                ListHeaderComponent={() => (
-                    <Text style={headText}>{`What's Popular 🎬 `}</Text>
-                )}
-                ListEmptyComponent={() => (
-                    <Text style={footText}>{`Let's Start!!!! 🏃🏻‍♀️🏃🏻‍♂️`}</Text>
-                )}
-                renderItem={({ item, index }) => { return <RenderCard item={item} index={index} /> }}
-                keyExtractor={(item) => item?.title}
+                onEndReachedThreshold={0.6}
             />
         </Layout>
     )

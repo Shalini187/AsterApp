@@ -107,7 +107,7 @@ export const loginStyles = StyleSheet.create({
 
 export const movieStyles = StyleSheet.create({
     text: {
-        fontSize: textScale(16),
+        fontSize: textScale(14),
         textTransform: "capitalize",
         fontFamily: fontFamily.helveticaMedium
     },
@@ -137,12 +137,15 @@ export const movieStyles = StyleSheet.create({
         fontFamily: fontFamily.proximaBold
     },
     mycard: {
-        paddingTop: moderateScale(24),
+        paddingTop: moderateScaleVertical(24),
         borderRadius: moderateScale(16),
+        marginTop: moderateScale(-16),
         padding: moderateScale(8),
         width: moderateScale(110),
+        justifyContent: "flex-end",
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
+        alignItems: "center",
         flex: 1
     }
 });
