@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { fontFamily, moderateScale, moderateScaleVertical, textScale, width } from "../constants";
 
 export const imageStyle = StyleSheet.create({
@@ -9,7 +9,7 @@ export const imageStyle = StyleSheet.create({
         borderRadius: 30,
         position: 'absolute',
         backgroundColor: 'tansparent',
-        width: Dimensions.get('screen').width,
+        width: width,
     },
     card: {
         flex: 1,
@@ -105,21 +105,45 @@ export const loginStyles = StyleSheet.create({
     }
 });
 
-export const chatStyles = StyleSheet.create({
+export const movieStyles = StyleSheet.create({
     text: {
         fontSize: textScale(16),
-        textTransform: "capitalize"
+        textTransform: "capitalize",
+        fontFamily: fontFamily.helveticaMedium
     },
-    subText: {
-        marginLeft: moderateScale(12),
-        fontSize: textScale(12)
+    gridStyle: {
+        justifyContent: "space-between",
+        paddingHorizontal: moderateScale(16),
+        paddingVertical: moderateScale(8)
+    },
+    imageStyle: {
+        resizeMode: "contain",
+        height: moderateScale(200),
+        width: moderateScale(110),
+        borderRadius: moderateScale(16),
+        overflow: "hidden",
+        zIndex: 1
+    },
+    headText: {
+        fontSize: textScale(18),
+        alignSelf: "flex-start",
+        margin: moderateScale(16),
+        fontFamily: fontFamily.proximaBold
+    },
+    footText: {
+        fontSize: textScale(20),
+        alignSelf: "center",
+        paddingVertical: "50%",
+        fontFamily: fontFamily.proximaBold
     },
     mycard: {
-        padding: moderateScale(8),
         paddingTop: moderateScale(24),
+        borderRadius: moderateScale(16),
+        padding: moderateScale(8),
         width: moderateScale(110),
-        overflow: "hidden",
-        borderRadius: moderateScale(16)
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
+        flex: 1
     }
 });
 

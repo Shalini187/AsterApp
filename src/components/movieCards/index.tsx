@@ -1,11 +1,10 @@
 import React from "react";
 import { Layout, Text } from "@ui-kitten/components";
-import { fontFamily, moderateScale, textScale } from "../../constants";
 import { FlatList, RefreshControl, TouchableOpacity } from "react-native";
-import navigationString from "../../utils/navigationString";
-import { chatStyles } from "../../styles";
-import { formatData } from "../../utils";
 import FastImage from "react-native-fast-image";
+import navigationString from "../../utils/navigationString";
+import { movieStyles } from "../../styles";
+import { formatData } from "../../utils";
 import { API_IMAGE } from "../../services/urls";
 
 let _ = require("lodash");
@@ -21,7 +20,7 @@ interface IMovie {
 const MovieList = (props: IMovie) => {
     let { data, setRefresh, refresh, navigation, numColumns } = props || {};
 
-    let { text, mycard, subText } = chatStyles || {};
+    let { text, mycard, gridStyle, headText, footText, imageStyle } = movieStyles || {};
 
     const RenderCard = ({ item, index }: any) => {
         let { empty, title, poster_path } = item || {};
@@ -31,19 +30,12 @@ const MovieList = (props: IMovie) => {
                 navigation.navigate(navigationString.DETAILSCREEN, { ...item });
             }}>
                 <FastImage
-                    style={{
-                        resizeMode: "contain",
-                        height: moderateScale(200),
-                        width: moderateScale(110),
-                        borderRadius: moderateScale(16),
-                        overflow: "hidden",
-                        zIndex: 1
-                    }}
+                    style={imageStyle}
                     source={{ uri: `${API_IMAGE}` + `${poster_path}` }}
                 />
-                <Layout style={{ ...mycard, borderTopLeftRadius: 0, borderTopRightRadius: 0, marginTop: -16, flex: 1 }} level="2">
+                <Layout style={mycard} level={"2"}>
                     <Layout level="2">
-                        <Text style={{ ...text, fontFamily: fontFamily.helveticaMedium }}>{title}</Text>
+                        <Text style={text}>{title}</Text>
                     </Layout>
                 </Layout>
 
@@ -66,19 +58,13 @@ const MovieList = (props: IMovie) => {
                 listKey={'A'}
                 showsVerticalScrollIndicator={false}
                 numColumns={numColumns}
-                columnWrapperStyle={{ justifyContent: "space-between", paddingHorizontal: moderateScale(16), paddingVertical: moderateScale(8) }}
-                ListHeaderComponent={() => {
-                    return (
-                        <Text style={{ fontFamily: fontFamily.proximaBold, fontSize: textScale(18), alignSelf: "flex-start", margin: moderateScale(16) }}>
-                            {`What's Popular 🎬 `}
-                        </Text>
-                    )
-                }}
-                ListEmptyComponent={() => {
-                    return (
-                        <Text style={{ fontFamily: fontFamily.proximaBold, fontSize: textScale(20), alignSelf: "center", paddingVertical: "50%" }}>{`Let's Start!!!! 🎬 `}</Text>
-                    )
-                }}
+                columnWrapperStyle={gridStyle}
+                ListHeaderComponent={() => (
+                    <Text style={headText}>{`What's Popular 🎬 `}</Text>
+                )}
+                ListEmptyComponent={() => (
+                    <Text style={footText}>{`Let's Start!!!! 🏃🏻‍♀️🏃🏻‍♂️`}</Text>
+                )}
                 renderItem={({ item, index }) => { return <RenderCard item={item} index={index} /> }}
                 keyExtractor={(item) => item?.title}
             />
