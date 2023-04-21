@@ -12,8 +12,9 @@ interface ISearch {
 }
 
 function SystemSearch(props: ISearch) {
-    let { value, setValue } = props || {};
     const { theme } = useSelector((state: any) => state?.auth);
+    let { value, setValue } = props || {};
+   
     let colorStyle = (theme == "dark") ? "#F2F8FF" : "#002885";
 
     let { centeredView, input } = searchStyle || {};

@@ -4,21 +4,10 @@ import React from "react";
 
 interface Iloader {
     isLoading?: boolean;
-    withModal?: boolean;
 }
 
 const Loader = (prop: Iloader) => {
-    const { isLoading, withModal } = prop || {};
-
-    if (withModal && isLoading) {
-        return (
-            <Modal transparent visible={isLoading}>
-                <Layout style={style.container}>
-                    <Spinner size={'giant'} status={'primary'} />
-                </Layout>
-            </Modal>
-        );
-    }
+    const { isLoading } = prop || {};
 
     if (isLoading) {
         return (
