@@ -4,39 +4,49 @@ import { fontFamily, moderateScale, textScale } from "../../constants";
 import { FlatList, RefreshControl, TouchableOpacity } from "react-native";
 import navigationString from "../../utils/navigationString";
 import { chatStyles } from "../../styles";
+import { formatData } from "../../utils";
+import FastImage from "react-native-fast-image";
+import { API_IMAGE } from "../../services/urls";
 
 let _ = require("lodash");
 
 interface IMovie {
     data: Array<any>;
-    onClick: Function;
     setRefresh: Function;
     refresh: boolean;
     navigation: any;
+    numColumns: number
 }
 
 const MovieList = (props: IMovie) => {
-    let { data, onClick, setRefresh, refresh, navigation } = props || {};
+    let { data, setRefresh, refresh, navigation, numColumns } = props || {};
 
     let { text, mycard, subText } = chatStyles || {};
 
     const RenderCard = ({ item, index }: any) => {
-        let { name, uid, status } = item || {};
-
+        let { empty, title, poster_path } = item || {};
+        if (!!empty) return <Layout style={{ ...mycard, backgroundColor: 'transparent' }} />;
         return (
             <TouchableOpacity key={index} onPress={() => {
-                navigation.navigate(navigationString.DETAILSCREEN, {
-                    name, uid,
-                });
+                navigation.navigate(navigationString.DETAILSCREEN, { ...item });
             }}>
-                <Layout style={mycard} level="2">
-                    <Layout level={"4"} style={{ height: 40, width: 40, borderRadius: 100, marginRight: 16 }}>
-                        <Text style={{ fontFamily: fontFamily.helveticaBold, fontSize: moderateScale(12), alignSelf: "center", paddingVertical: moderateScale(12), textTransform: "capitalize" }}>{name}</Text>
-                    </Layout>
+                <FastImage
+                    style={{
+                        resizeMode: "contain",
+                        height: moderateScale(200),
+                        width: moderateScale(110),
+                        borderRadius: moderateScale(16),
+                        overflow: "hidden",
+                        zIndex: 1
+                    }}
+                    source={{ uri: `${API_IMAGE}` + `${poster_path}` }}
+                />
+                <Layout style={{ ...mycard, borderTopLeftRadius: 0, borderTopRightRadius: 0, marginTop: -16, flex: 1 }} level="2">
                     <Layout level="2">
-                        <Text style={{ ...text, fontFamily: fontFamily.helveticaMedium }}>{name}</Text>
+                        <Text style={{ ...text, fontFamily: fontFamily.helveticaMedium }}>{title}</Text>
                     </Layout>
                 </Layout>
+
             </TouchableOpacity>
         )
     }
@@ -44,7 +54,7 @@ const MovieList = (props: IMovie) => {
     return (
         <Layout style={{ flex: 1 }}>
             <FlatList
-                data={data}
+                data={formatData(data, numColumns)}
                 refreshControl={
                     <RefreshControl
                         refreshing={refresh}
@@ -53,11 +63,13 @@ const MovieList = (props: IMovie) => {
                         }}
                     />
                 }
-                numColumns={3}
-                columnWrapperStyle={{ justifyContent: "space-between", padding: moderateScale(16) }}
+                listKey={'A'}
+                showsVerticalScrollIndicator={false}
+                numColumns={numColumns}
+                columnWrapperStyle={{ justifyContent: "space-between", paddingHorizontal: moderateScale(16), paddingVertical: moderateScale(8) }}
                 ListHeaderComponent={() => {
                     return (
-                        <Text style={{ fontFamily: fontFamily.proximaBold, fontSize: textScale(18), alignSelf: "flex-start", marginHorizontal: moderateScale(16), marginBottom: moderateScale(16) }}>
+                        <Text style={{ fontFamily: fontFamily.proximaBold, fontSize: textScale(18), alignSelf: "flex-start", margin: moderateScale(16) }}>
                             {`What's Popular 🎬 `}
                         </Text>
                     )
@@ -68,7 +80,7 @@ const MovieList = (props: IMovie) => {
                     )
                 }}
                 renderItem={({ item, index }) => { return <RenderCard item={item} index={index} /> }}
-                keyExtractor={(item) => item?.uid}
+                keyExtractor={(item) => item?.title}
             />
         </Layout>
     )

@@ -30,17 +30,9 @@ export default function MainStack() {
                     ...options,
                 }}
             />
-             <Stack.Screen
+            <Stack.Screen
                 name={navigationStrings.DETAILSCREEN}
                 component={Screens.DetailScreen}
-                options={{
-                    headerShown: false,
-                    ...options,
-                }}
-            />
-            <Stack.Screen
-                name={navigationStrings.SEARCHSCREEN}
-                component={Screens.SearchScreen}
                 options={{
                     headerShown: false,
                     ...options,
