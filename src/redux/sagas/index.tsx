@@ -4,7 +4,7 @@ import { GET_POPULAR_LIST } from "../../services/urls";
 import types from "../types";
 import { createQueryString } from "../../utils";
 
-function* getTopHeadline({ payload }: any) {
+function* getTopHeadline({ payload, apiCall }: any) {
     try {
         const res =  yield (getQueryRequest(GET_POPULAR_LIST, createQueryString(payload)));
         console.log("Saga Api Call ---> " , res, payload)

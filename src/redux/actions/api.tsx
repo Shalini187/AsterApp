@@ -10,3 +10,10 @@ export const requestAPI = async (data: any) => {
   });
 };
 
+export const searchAPI = async (data: any) => {
+  dispatch({
+    type: types.API_REQUEST,
+    payload: data
+  });
+};
+

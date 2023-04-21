@@ -106,14 +106,34 @@ export const createQueryString = (data: any) => {
     }).join('&');
 }
 
-export const formatData = (data: any, numColumns: any) => {
-    const numberOfFullRows = Math.floor(data?.length / numColumns);
-
-    let numberOfElementsLastRow = data?.length - (numberOfFullRows * numColumns);
-    while (numberOfElementsLastRow !== numColumns && numberOfElementsLastRow !== 0) {
-        data?.push({ key: `blank-${numberOfElementsLastRow}`, empty: true });
-        numberOfElementsLastRow++;
-    }
-
-    return data;
-};
+export const advancedSearch = [
+    {
+        title: "Sort",
+        subTitle: "sort results by",
+        sortArray: [
+            { name: "Popularity Descending", value: "popularity.desc" },
+            { name: "Popularity Ascending", value: "popularity.asc" },
+            { name: "Title(A-Z)", value: "original_title.asc" },
+            { name: "Release Descending", value: "release_date.desc" },
+            { name: "Release Ascending", value: "release_date.asc" },
+            { name: "Rating Descending", value: "vote_average.desc" },
+            { name: "Rating Ascending", value: "vote_average.asc" },
+        ]
+    },
+    {
+        title: "Filter",
+        subTitle: "Genres",
+        sortArray: [
+            { name: "Action", value: 28 },
+            { name: "Adventure", value: 12 },
+            { name: "Animation", value: 16 },
+            { name: "Comedy", value: 35 },
+            { name: "Crime", value: 80 }, { name: "Documentary", value: 99 },
+            { name: "Drama", value: 18 }, { name: "Family", value: 10751 }, { name: "Fantasy", value: 14 }, { name: "History", value: 36 }, { name: "Horror", value: 27 }, { name: "Music", value: 10402 }, { name: "Mystery", value: 9648 },
+            { name: "Romance", value: 10749 }, { name: "Science Fiction", value: 878 }, { name: "TV Movie", value: 10770 }, { name: "Thriller", value: 53 }, { name: "War", value: 10752 }, { name: "Western", value: 37 }]
+    },
+    {
+        title: "Search Title",
+        subTitle: "Search for a movie, tv show, person.....",
+    },
+];

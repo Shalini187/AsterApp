@@ -1,14 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { Icon, Layout, } from "@ui-kitten/components";
-import { HeaderBar, MovieList, ThemeProvider, WrapperContainer } from "../../components";
+import { HeaderBar, MovieList, SystemSearch, ThemeProvider, WrapperContainer } from "../../components";
 import { COLORS, hitSlop, moderateScale } from "../../constants";
 import { getLoginUsers, signOut } from "../../utils";
 import { useDispatch, useSelector } from "react-redux";
-import navigationString from "../../utils/navigationString";
 import { onChangeTheme } from "../../redux/actions/auth";
 import { useFocusEffect } from "@react-navigation/native";
 import { requestAPI } from '../../redux/actions/api';
+import { getQueryRequest } from "../../services/api";
 
 let _ = require("lodash");
 
@@ -21,7 +21,10 @@ const MainScreen = ({ navigation, route }: any) => {
     let fontColor = (theme != "dark") ? "#002885" : "#F2F8FF";
 
     const [loginUser, setLoginUser] = useState<any>('');
+    const [value, setValue] = useState<any>('');
     const [page, setPage] = useState<number>(1);
+
+    const sheetRef: any = useRef(null);
 
     useFocusEffect(
         useCallback(() => {
@@ -34,7 +37,7 @@ const MainScreen = ({ navigation, route }: any) => {
     }, []);
 
     const init = async () => {
-        dispatch(requestAPI({ page }));
+        dispatch(requestAPI({ page, apiCall: getQueryRequest }));
     }
 
     const fetchMoreData = () => {
@@ -83,9 +86,7 @@ const MainScreen = ({ navigation, route }: any) => {
                                 />
                                 <Layout level={'4'} style={{ borderRadius: moderateScale(100), alignSelf: "flex-end", margin: moderateScale(16) }}>
                                     <TouchableOpacity
-                                        onPress={() => {
-                                            navigation.navigate(navigationString.DETAILSCREEN);
-                                        }}
+                                        onPress={() => sheetRef?.current?.open()}
                                         style={{ padding: moderateScale(8), alignSelf: "center", width: moderateScale(50), height: moderateScale(50) }}>
                                         <Icon
                                             pack={'feather'}
@@ -95,6 +96,12 @@ const MainScreen = ({ navigation, route }: any) => {
                                     </TouchableOpacity>
                                 </Layout>
                             </Layout>
+                            <SystemSearch
+                                sheetRef={sheetRef}
+                                onApply={() => { }}
+                                value={value}
+                                setValue={setValue}
+                            />
                         </>
                     }
                 />

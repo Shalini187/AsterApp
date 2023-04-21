@@ -55,31 +55,12 @@ export const flexStyle = StyleSheet.create({
 });
 
 export const searchStyle = StyleSheet.create({
-    centeredView: {
-        flex: 1,
-        width: '100%',
-        marginTop: moderateScale(54),
-        borderRadius: 30,
-        position: 'absolute',
-        flexDirection: 'row',
-    },
-    buttonSearch: {
-        right: '100%'
-    },
-    buttonClose: {
-        top: '4%',
-        right: '280%',
-    },
     input: {
         width: '100%',
         fontSize: textScale(13),
         fontFamily: fontFamily.proximaMedium,
         borderRadius: moderateScale(8),
         borderColor: '#000',
-    },
-    buttons: {
-        flexDirection: 'row',
-        justifyContent: 'space-between'
     }
 });
 
