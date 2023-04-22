@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { Icon, Layout, } from "@ui-kitten/components";
 import { HeaderBar, MovieList, SystemSearch, ThemeProvider, WrapperContainer } from "../../components";
@@ -28,16 +28,6 @@ const MainScreen = ({ navigation, route }: any) => {
 
     const sheetRef: any = useRef(null);
 
-    useFocusEffect(
-        useCallback(() => {
-            init(false);
-        }, [page, token?.[0]?.TOKEN])
-    );
-
-    useEffect(() => {
-        getLoginUsers(setLoginUser, userData);
-    }, []);
-
     const init = async (reset: boolean) => {
         if (!!value && !reset) {
             dispatch(requestAPI({ query: value, apiCall: getQueryRequest, url: GET_SEARCH_LIST, page }));
@@ -60,6 +50,15 @@ const MainScreen = ({ navigation, route }: any) => {
         });
         init(true);
     }
+
+    useEffect(() => {
+        init(false);
+        getLoginUsers(setLoginUser, userData);
+    }, []);
+
+    useMemo(() => {
+        init(false);
+    }, [page])
 
     const RenderRightComp = () => {
         return (
