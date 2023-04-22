@@ -26,6 +26,9 @@ const MainScreen = ({ navigation, route }: any) => {
     const [value, setValue] = useState<any>('');
     const [page, setPage] = useState<number>(1);
 
+    const [sortBy, setSortByItems] = useState<string>("");
+    const [genreItems, setGenreItems] = useState<any>([]);
+
     const sheetRef: any = useRef(null);
 
     useFocusEffect(
@@ -58,6 +61,9 @@ const MainScreen = ({ navigation, route }: any) => {
 
     const onReset = () => {
         setPage(1);
+        setValue("");
+        setGenreItems([]);
+        setSortByItems("");
         dispatch({
             type: types.CLEAR_REDUX_DATA,
         });
@@ -130,6 +136,10 @@ const MainScreen = ({ navigation, route }: any) => {
                                 setValue={setValue}
                                 setPage={setPage}
                                 page={page}
+                                extraData = {{
+                                    sortBy, setSortByItems,
+                                    genreItems, setGenreItems
+                                }}
                             />
                         </>
                     }

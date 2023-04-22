@@ -17,10 +17,12 @@ interface ISearch {
     setValue: any
     page: number;
     setPage: any;
+    extraData?: any
 }
 
 function SystemSearch(props: ISearch) {
-    let { setPage, sheetRef, value, setValue, page } = props || {};
+    let { setPage, sheetRef, value, setValue, page, extraData } = props || {};
+    let { sortBy, setSortByItems, genreItems, setGenreItems } = extraData || {};
     const { theme } = useSelector((state: any) => state?.auth);
 
     let colorStyle = (theme == "dark") ? "#F2F8FF" : "#002885";
@@ -28,8 +30,6 @@ function SystemSearch(props: ISearch) {
     let { input } = searchStyle || {};
 
     const dispatch: any = useDispatch();
-    const [sortBy, setSortByItems] = useState<string>("");
-    const [genreItems, setGenreItems] = useState<any>([]);
 
     const applySearch = async () => {
         if (!!value) {
