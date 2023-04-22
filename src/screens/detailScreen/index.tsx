@@ -46,9 +46,9 @@ const DetailScreen = ({ navigation, route }: any) => {
                     </Layout>
 
                     <Layout style={{ width: "70%", marginLeft: moderateScale(16) }}>
-                        <Layout style={{ flexDirection: "row", flexShrink: 1, }}>
-                            <Text style={{ fontFamily: fontFamily.proximaBold, fontSize: textScale(24) }}>
-                                {`${original_title?.trim()} ${moment(release_date)?.format("( YYYY )")}`}
+                        <Layout style={{ flexDirection: "row", flexWrap: "wrap", flex: 1 }}>
+                            <Text style={{ fontFamily: fontFamily.proximaBold, fontSize: textScale(24), flexWrap: "wrap" }}>
+                                {`${original_title?.trim()} ${moment(release_date)?.format("(YYYY)")}`}
                             </Text>
                         </Layout>
                         <Layout style={{ marginVertical: moderateScale(16) }}>
