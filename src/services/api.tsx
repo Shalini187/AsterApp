@@ -120,6 +120,7 @@ export const getQueryRequest = async (url: string, queryString: any) => {
                 Authorization: token?.[0]?.TOKEN
             }
         }
+        console.log("url------>", url + `?api_key=${token?.[0]?.API_KEY}` + `&${queryString}`)
         if (!!token?.[0]?.TOKEN) {
             return fetch(url + `?api_key=${token?.[0]?.API_KEY}` + `&${queryString}`, getOptions).then(responseJson);
         }

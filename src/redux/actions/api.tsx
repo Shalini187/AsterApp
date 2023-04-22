@@ -9,11 +9,3 @@ export const requestAPI = async (data: any) => {
     payload: data
   });
 };
-
-export const searchAPI = async (data: any) => {
-  dispatch({
-    type: types.API_REQUEST,
-    payload: data
-  });
-};
-

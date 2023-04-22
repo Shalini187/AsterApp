@@ -1,13 +1,13 @@
 import { put, takeLatest, all } from "@redux-saga/core/effects";
-import { getQueryRequest } from "../../services/api";
 import { GET_POPULAR_LIST } from "../../services/urls";
 import types from "../types";
 import { createQueryString } from "../../utils";
 
-function* getTopHeadline({ payload, apiCall }: any) {
+function* getTopHeadline({ payload }: any) {
+    let { apiCall, isSearch = false, url = GET_POPULAR_LIST, ...rest } = payload || {};
     try {
-        const res =  yield (getQueryRequest(GET_POPULAR_LIST, createQueryString(payload)));
-        console.log("Saga Api Call ---> " , res, payload)
+        const res = yield (apiCall(url, createQueryString(rest)));
+        console.log("Saga Api Call ---> ", res, payload)
         if (res?.results?.length) {
             yield put({
                 type: types.API_SUCCESS,
@@ -29,7 +29,5 @@ function* topHeadlineSaga() {
 }
 
 export default function* rootSaga() {
-    yield all([
-        topHeadlineSaga(),
-    ])
+    yield all([topHeadlineSaga()])
 }

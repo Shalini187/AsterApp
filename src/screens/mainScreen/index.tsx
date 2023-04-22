@@ -9,6 +9,7 @@ import { onChangeTheme } from "../../redux/actions/auth";
 import { useFocusEffect } from "@react-navigation/native";
 import { requestAPI } from '../../redux/actions/api';
 import { getQueryRequest } from "../../services/api";
+import { GET_SEARCH_LIST } from "../../services/urls";
 
 let _ = require("lodash");
 
@@ -16,7 +17,7 @@ const MainScreen = ({ navigation, route }: any) => {
     const { userData, theme } = useSelector((state: any) => state.auth);
     const { data: movieData, isListEnd, moreLoading, loading } = useSelector((state: any) => state.api);
 
-    const dispatch = useDispatch();
+    const dispatch: any = useDispatch();
 
     let fontColor = (theme != "dark") ? "#002885" : "#F2F8FF";
 
@@ -28,7 +29,7 @@ const MainScreen = ({ navigation, route }: any) => {
 
     useFocusEffect(
         useCallback(() => {
-            init();
+            init(false);
         }, [page])
     );
 
@@ -36,14 +37,26 @@ const MainScreen = ({ navigation, route }: any) => {
         getLoginUsers(setLoginUser, userData);
     }, []);
 
-    const init = async () => {
-        dispatch(requestAPI({ page, apiCall: getQueryRequest }));
+    const init = async (reset: boolean) => {
+        if (!!value && !reset) {
+            dispatch(requestAPI({ query: value, apiCall: getQueryRequest, url: GET_SEARCH_LIST, isSearch: true, page }));
+            return;
+        }
+        setValue("");
+        dispatch(requestAPI({ page, apiCall: getQueryRequest, isSearch: false }));
     }
 
     const fetchMoreData = () => {
         if (!isListEnd && !moreLoading) {
             setPage((p) => p + 1);
         }
+    }
+
+    const onReset = () => {
+        dispatch({
+            type: "CLEAR_REDUX_DATA",
+        });
+        init(true);
     }
 
     const RenderRightComp = () => {
@@ -60,6 +73,13 @@ const MainScreen = ({ navigation, route }: any) => {
                     <Icon
                         pack={'feather'}
                         name={theme == "dark" ? 'sun' : "moon"}
+                        style={{ height: 22, width: 22, tintColor: fontColor, marginLeft: moderateScale(16) }}
+                    />
+                </TouchableOpacity>
+                <TouchableOpacity hitSlop={hitSlop} onPress={onReset}>
+                    <Icon
+                        pack={'feather'}
+                        name={"refresh-cw"}
                         style={{ height: 22, width: 22, tintColor: fontColor, marginLeft: moderateScale(16) }}
                     />
                 </TouchableOpacity>
@@ -97,10 +117,10 @@ const MainScreen = ({ navigation, route }: any) => {
                                 </Layout>
                             </Layout>
                             <SystemSearch
-                                sheetRef={sheetRef}
-                                onApply={() => { }}
                                 value={value}
+                                sheetRef={sheetRef}
                                 setValue={setValue}
+                                setPage={setPage}
                             />
                         </>
                     }

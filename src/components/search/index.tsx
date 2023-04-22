@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ScrollView, TouchableOpacity } from "react-native";
 import { Icon, Input, Layout, Text } from '@ui-kitten/components';
@@ -8,25 +8,30 @@ import { hitSlop, moderateScale, COLORS as colors, fontFamily, textScale, height
 import BottomUpRawSheet from "../bottomSheet";
 import { advancedSearch } from "../../utils";
 import { requestAPI } from "../../redux/actions/api";
+import { GET_SEARCH_LIST } from "../../services/urls";
+import { getQueryRequest } from "../../services/api";
 
 interface ISearch {
     sheetRef: any;
-    onApply: Function;
+    value: any;
+    setValue: any
+    setPage: any;
 }
 
 function SystemSearch(props: ISearch) {
-    let { sheetRef, onApply } = props || {};
+    let { setPage, sheetRef, value, setValue } = props || {};
     const { theme } = useSelector((state: any) => state?.auth);
-    const [value, setValue] = useState<any>("");
 
     let colorStyle = (theme == "dark") ? "#F2F8FF" : "#002885";
 
     let { input } = searchStyle || {};
 
-    const dispatch = useDispatch();
+    const dispatch: any = useDispatch();
 
-    const init = async () => {
-        dispatch(requestAPI({ query: value, apiCall: getQueryRequest }));
+    const applySearch = async () => {
+        setPage(1);
+        dispatch({ type: "CLEAR_REDUX_DATA" });
+        dispatch(requestAPI({ query: value, apiCall: getQueryRequest, url: GET_SEARCH_LIST }));
     }
 
     const RenderChips = (props: any) => {
@@ -50,8 +55,11 @@ function SystemSearch(props: ISearch) {
     const RenderApply = () => {
         return (
             <Layout style={{ flex: 1, marginTop: moderateScale(32), alignSelf: "flex-end", backgroundColor: colors.red, padding: moderateScale(12), borderRadius: moderateScale(16) }}>
-                <TouchableOpacity hitSlop={hitSlop} onPress={() => sheetRef?.current?.close()}>
-                    <Text style={{ fontFamily: fontFamily.proximaBold, fontSize: textScale(16) }}>{'Apply'}</Text>
+                <TouchableOpacity hitSlop={hitSlop} onPress={() => {
+                    applySearch();
+                    sheetRef?.current?.close();
+                }}>
+                    <Text style={{ fontFamily: fontFamily.proximaBold, fontSize: textScale(16), color: colors.white }}>{'Apply'}</Text>
                 </TouchableOpacity>
             </Layout>
         )
