@@ -10,6 +10,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { requestAPI } from '../../redux/actions/api';
 import { getQueryRequest } from "../../services/api";
 import { GET_SEARCH_LIST } from "../../services/urls";
+import types from "../../redux/types";
 
 let _ = require("lodash");
 
@@ -53,8 +54,9 @@ const MainScreen = ({ navigation, route }: any) => {
     }
 
     const onReset = () => {
+        setPage(1);
         dispatch({
-            type: "CLEAR_REDUX_DATA",
+            type: types.CLEAR_REDUX_DATA,
         });
         init(true);
     }
@@ -103,6 +105,9 @@ const MainScreen = ({ navigation, route }: any) => {
                                     data={movieData}
                                     navigation={navigation}
                                     endReach={fetchMoreData}
+                                    onClick={() => dispatch({
+                                        type: types.CLEAR_REDUX_DATAID,
+                                    })}
                                 />
                                 <Layout level={'4'} style={{ borderRadius: moderateScale(100), alignSelf: "flex-end", margin: moderateScale(16) }}>
                                     <TouchableOpacity
@@ -121,7 +126,7 @@ const MainScreen = ({ navigation, route }: any) => {
                                 sheetRef={sheetRef}
                                 setValue={setValue}
                                 setPage={setPage}
-                                page = {page}
+                                page={page}
                             />
                         </>
                     }

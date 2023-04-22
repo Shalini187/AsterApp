@@ -16,10 +16,11 @@ interface IMovie {
     navigation: any;
     numColumns: number;
     endReach: any;
+    onClick: Function
 }
 
 const MovieList = (props: IMovie) => {
-    let { endReach, data, setRefresh = () => { }, refresh = false, navigation, numColumns } = props || {};
+    let { onClick, endReach, data, setRefresh = () => { }, refresh = false, navigation, numColumns } = props || {};
     let { text, mycard, gridStyle, headText, footText, footerCon, imageStyle, footerText_ } = movieStyles || {};
 
     const { isListEnd, moreLoading } = useSelector((state: any) => state.api);
@@ -30,6 +31,7 @@ const MovieList = (props: IMovie) => {
         let { title, poster_path } = item || {};
         return (
             <TouchableOpacity key={index} onPress={() => {
+                onClick();
                 navigation.navigate(navigationString.DETAILSCREEN, { ...item });
             }}>
                 <FastImage

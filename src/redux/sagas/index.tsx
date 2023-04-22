@@ -4,14 +4,18 @@ import types from "../types";
 import { createQueryString } from "../../utils";
 
 function* getTopHeadline({ payload }: any) {
-    let { apiCall, isSearch = false, url = GET_POPULAR_LIST, ...rest } = payload || {};
+    let { apiCall, isSearch = false, url = GET_POPULAR_LIST, id = false, ...rest } = payload || {};
+
     try {
         const res = yield (apiCall(url, createQueryString(rest)));
         console.log("Saga Api Call ---> ", res, payload)
-        if (res?.results?.length) {
+        if (res?.results?.length || res?.id) {
             yield put({
                 type: types.API_SUCCESS,
-                payload: res?.results
+                payload: {
+                    results: res?.results ?? res,
+                    id
+                }
             })
         } else {
             yield put({ type: types.API_LIST_END })

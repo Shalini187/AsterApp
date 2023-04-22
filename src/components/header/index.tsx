@@ -2,7 +2,7 @@ import React from 'react';
 import { Icon, Layout, Text } from '@ui-kitten/components';
 import { TouchableOpacity, View } from 'react-native';
 import { useSelector } from "react-redux";
-import { COLORS, fontFamily, moderateScale, textScale } from '../../constants';
+import { fontFamily, hitSlop, moderateScale, textScale } from '../../constants';
 import { titleWords } from '../../utils';
 
 interface IHeader {
@@ -25,11 +25,11 @@ const HeaderBar = (props: IHeader) => {
     const RenderBack = () => {
         if (isBack) {
             return (
-                <TouchableOpacity onPress={onTap}>
+                <TouchableOpacity onPress={onTap} hitSlop={hitSlop}>
                     <Icon
                         pack={'feather'}
                         name={'arrow-left'}
-                        style={{ height: 24, width: 24, tintColor: COLORS.black }}
+                        style={{ height: 24, width: 24, tintColor: colorStyle }}
                     />
                 </TouchableOpacity>
             )
