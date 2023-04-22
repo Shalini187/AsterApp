@@ -15,7 +15,7 @@ import types from "../../redux/types";
 let _ = require("lodash");
 
 const MainScreen = ({ navigation, route }: any) => {
-    const { userData, theme } = useSelector((state: any) => state.auth);
+    const { userData, theme, token } = useSelector((state: any) => state.auth);
     const { data: movieData, isListEnd, moreLoading, loading } = useSelector((state: any) => state.api);
 
     const dispatch: any = useDispatch();
@@ -31,7 +31,7 @@ const MainScreen = ({ navigation, route }: any) => {
     useFocusEffect(
         useCallback(() => {
             init(false);
-        }, [page])
+        }, [page, token?.[0]?.TOKEN])
     );
 
     useEffect(() => {
@@ -100,15 +100,20 @@ const MainScreen = ({ navigation, route }: any) => {
                                 <HeaderBar headerText={loginUser?.[0]?.name} extraProps={{ status: loginUser?.[0]?.status }} rightProps={() => <RenderRightComp />} />
                             </Layout>
                             <Layout style={{ flex: 8 }}>
-                                <MovieList
-                                    numColumns={3}
-                                    data={movieData}
-                                    navigation={navigation}
-                                    endReach={fetchMoreData}
-                                    onClick={() => dispatch({
-                                        type: types.CLEAR_REDUX_DATAID,
-                                    })}
-                                />
+                                {
+                                    movieData?.length ?
+                                        <MovieList
+                                            numColumns={3}
+                                            data={movieData}
+                                            navigation={navigation}
+                                            endReach={fetchMoreData}
+                                            onClick={() => dispatch({
+                                                type: types.CLEAR_REDUX_DATAID,
+                                            })}
+                                        />
+                                        :
+                                        <></>
+                                }
                                 <Layout level={'4'} style={{ borderRadius: moderateScale(100), alignSelf: "flex-end", margin: moderateScale(16) }}>
                                     <TouchableOpacity
                                         onPress={() => sheetRef?.current?.open()}
