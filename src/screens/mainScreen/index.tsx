@@ -49,9 +49,11 @@ const MainScreen = ({ navigation, route }: any) => {
     }
 
     const fetchMoreData = () => {
-        if (!isListEnd && !moreLoading) {
-            setPage((p) => p + 1);
-        }
+        // if (!isListEnd && !moreLoading) {
+        //     setPage((p) => p + 1);
+        // }
+        if (loading) return;
+        setPage((p) => p + 1);
     }
 
     const onReset = () => {
