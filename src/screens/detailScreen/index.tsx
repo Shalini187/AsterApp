@@ -21,8 +21,6 @@ const DetailScreen = ({ navigation, route }: any) => {
 
     const [isLoading, setLoading] = useState<boolean>(true);
 
-    console.log("dsds", dataById, loading)
-
     useFocusEffect(
         useCallback(() => {
             init();
@@ -34,7 +32,7 @@ const DetailScreen = ({ navigation, route }: any) => {
         return;
     }
 
-    const { poster_path, original_title, overview, release_date, backdrop_path, tagline, genres } = dataById || {};
+    const { poster_path, original_title, overview, release_date, backdrop_path, tagline, genres, spoken_languages, production_companies, vote_average } = dataById || {};
 
     const RenderLayout = () => {
         return (
@@ -53,18 +51,19 @@ const DetailScreen = ({ navigation, route }: any) => {
                                 {`${original_title?.trim()} ${moment(release_date)?.format("( YYYY )")}`}
                             </Text>
                         </Layout>
-                        <Layout style={{ marginTop: moderateScale(16) }}>
+                        <Layout style={{ marginVertical: moderateScale(16) }}>
                             <Text style={{ fontFamily: fontFamily.proximaBold, fontSize: textScale(12) }}>{tagline}</Text>
                         </Layout>
-                        <Layout style={{ marginTop: moderateScale(16) }}>
+                        <Layout style={{ marginBottom: moderateScale(16) }}>
+                            <Text style={{ fontFamily: fontFamily.proximaBold, fontSize: textScale(14), marginBottom: moderateScale(12) }}>{"Genres"}</Text>
                             <FlatList
                                 data={genres}
-                                ListHeaderComponent={() => <Text style={{ fontFamily: fontFamily.proximaBold, fontSize: textScale(14), marginBottom: moderateScale(16) }}>{"Genres"}</Text>}
                                 horizontal
                                 showsHorizontalScrollIndicator={false}
+                                contentContainerStyle={{ paddingRight: moderateScale(100) }}
                                 keyExtractor={(_, index) => index.toString()}
                                 renderItem={({ item, index }) => (
-                                    <Layout level={'4'} style={{ padding: moderateScale(16), borderRadius: moderateScale(16), marginLeft: moderateScale(8) }}>
+                                    <Layout level={'4'} key={index} style={{ padding: moderateScale(16), borderRadius: moderateScale(16), margin: moderateScale(4) }}>
                                         <Text style={{ fontFamily: fontFamily.proximaBold, fontSize: textScale(12) }}>{item?.name}</Text>
                                     </Layout>
                                 )}
@@ -73,10 +72,41 @@ const DetailScreen = ({ navigation, route }: any) => {
                     </Layout>
 
                 </Layout>
-                <Layout style={{ marginTop: moderateScale(16) }}>
+                <Layout style={{ marginVertical: moderateScale(16) }}>
                     <Text style={{ fontFamily: fontFamily.proximaMedium, fontSize: textScale(14), textAlign: "justify" }}>{overview}</Text>
                 </Layout>
-
+                <Layout style={{ marginVertical: moderateScale(8) }}>
+                    <Text style={{ fontFamily: fontFamily.proximaBold, fontSize: textScale(14), textAlign: "justify" }}>
+                        {`Release Date : `}
+                        <Text style={{ fontFamily: fontFamily.proximaMedium, fontSize: textScale(16), textAlign: "justify" }}>
+                            {`${release_date}`}
+                        </Text>
+                    </Text>
+                </Layout>
+                <Layout style={{ marginVertical: moderateScale(8) }}>
+                    <Text style={{ fontFamily: fontFamily.proximaBold, fontSize: textScale(14), textAlign: "justify" }}>
+                        {`Language : `}
+                        <Text style={{ fontFamily: fontFamily.proximaMedium, fontSize: textScale(16), textAlign: "justify" }}>
+                            {`${[...spoken_languages?.map((i: any) => i?.name)]?.join(" , ")}`}
+                        </Text>
+                    </Text>
+                </Layout>
+                <Layout style={{ marginVertical: moderateScale(8) }}>
+                    <Text style={{ fontFamily: fontFamily.proximaBold, fontSize: textScale(14), textAlign: "justify" }}>
+                        {`User Vote % : `}
+                        <Text style={{ fontFamily: fontFamily.proximaMedium, fontSize: textScale(16), textAlign: "justify" }}>
+                            {`${vote_average}`}
+                        </Text>
+                    </Text>
+                </Layout>
+                <Layout style={{ marginVertical: moderateScale(8) }}>
+                    <Text style={{ fontFamily: fontFamily.proximaBold, fontSize: textScale(14), textAlign: "left" }}>
+                        {`Production Company : `}
+                        <Text style={{ fontFamily: fontFamily.proximaMedium, fontSize: textScale(16), textAlign: "left" }}>
+                            {`${[...production_companies?.map((i: any) => i?.name)]?.join(", ")}`}
+                        </Text>
+                    </Text>
+                </Layout>
             </ScrollView>
         )
     }
@@ -113,7 +143,7 @@ const DetailScreen = ({ navigation, route }: any) => {
 
                             </Layout>
                             <Layout style={{ flex: 0.7, borderTopLeftRadius: moderateScale(24), borderTopRightRadius: moderateScale(24), padding: moderateScale(16) }}>
-                                <RenderLayout />
+                                {(loading || isLoading) ? <></> : <RenderLayout />}
                             </Layout>
                         </Layout>
                     }
