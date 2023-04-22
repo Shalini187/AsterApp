@@ -39,11 +39,11 @@ const MainScreen = ({ navigation, route }: any) => {
 
     const init = async (reset: boolean) => {
         if (!!value && !reset) {
-            dispatch(requestAPI({ query: value, apiCall: getQueryRequest, url: GET_SEARCH_LIST, isSearch: true, page }));
+            dispatch(requestAPI({ query: value, apiCall: getQueryRequest, url: GET_SEARCH_LIST, page }));
             return;
         }
         setValue("");
-        dispatch(requestAPI({ page, apiCall: getQueryRequest, isSearch: false }));
+        dispatch(requestAPI({ page, apiCall: getQueryRequest }));
     }
 
     const fetchMoreData = () => {
@@ -121,6 +121,7 @@ const MainScreen = ({ navigation, route }: any) => {
                                 sheetRef={sheetRef}
                                 setValue={setValue}
                                 setPage={setPage}
+                                page = {page}
                             />
                         </>
                     }

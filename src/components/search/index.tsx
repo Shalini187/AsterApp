@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ScrollView, TouchableOpacity } from "react-native";
 import { Icon, Input, Layout, Text } from '@ui-kitten/components';
@@ -15,11 +15,12 @@ interface ISearch {
     sheetRef: any;
     value: any;
     setValue: any
+    page: number;
     setPage: any;
 }
 
 function SystemSearch(props: ISearch) {
-    let { setPage, sheetRef, value, setValue } = props || {};
+    let { setPage, sheetRef, value, setValue, page } = props || {};
     const { theme } = useSelector((state: any) => state?.auth);
 
     let colorStyle = (theme == "dark") ? "#F2F8FF" : "#002885";
@@ -27,24 +28,67 @@ function SystemSearch(props: ISearch) {
     let { input } = searchStyle || {};
 
     const dispatch: any = useDispatch();
+    const [sortBy, setSortByItems] = useState<string>("");
+    const [genreItems, setGenreItems] = useState<any>([]);
 
     const applySearch = async () => {
-        setPage(1);
-        dispatch({ type: "CLEAR_REDUX_DATA" });
-        dispatch(requestAPI({ query: value, apiCall: getQueryRequest, url: GET_SEARCH_LIST }));
+        if (!!value) {
+            setPage(1);
+            setGenreItems([]);
+            setSortByItems("");
+            dispatch({ type: "CLEAR_REDUX_DATA" });
+            dispatch(requestAPI({ query: value, apiCall: getQueryRequest, url: GET_SEARCH_LIST, page }));
+            return;
+        }
+        if (genreItems?.length || sortBy?.length) {
+            setPage(1);
+            dispatch({ type: "CLEAR_REDUX_DATA" });
+            dispatch(requestAPI({ page, apiCall: getQueryRequest, sort_by: sortBy, with_genres: genreItems?.toString() }));
+            return;
+        }
+        dispatch(requestAPI({ page, apiCall: getQueryRequest }));
     }
 
+    const isChecked = (item: any) => {
+        return genreItems?.includes(item);
+    }
+
+    const addClickItems = (item: any) => {
+        setGenreItems((check: any) => [...check, item]);
+    }
+
+    const removeClickItems = (item: any) => {
+        let temp = [...genreItems];
+        const index = genreItems?.indexOf(item);
+        if (index > -1) { // only splice array when item is found
+            temp.splice(index, 1); // 2nd parameter means remove one item only
+        }
+        setGenreItems(temp);
+    }
+
+    const onClick = useCallback((i: any) => {
+        if (!!isChecked(i)) {
+            return removeClickItems(i);
+        } else {
+            return addClickItems(i);
+        }
+    }, [genreItems]);
+
     const RenderChips = (props: any) => {
-        let { sortArray } = props || {};
+        let { sortArray, title } = props || {};
         return (
             <ScrollView horizontal style={{ flex: 1, marginTop: moderateScale(8) }} showsHorizontalScrollIndicator={false}>
                 {
                     sortArray?.map((i: any, k: number) => {
                         return (
-                            <Layout key={i} level={"4"} style={{ padding: moderateScale(16), flexDirection: "row", margin: moderateScale(4), borderRadius: moderateScale(24) }}>
-                                <Text style={{ fontFamily: fontFamily.proximaMedium, fontSize: textScale(12) }}>{i?.name}</Text>
-                            </Layout>
-
+                            <TouchableOpacity onPress={() => {
+                                setValue("");
+                                title ? setSortByItems(i?.value) : onClick(i?.value);
+                            }}>
+                                <Layout key={'_' + Math.random().toString(36).substr(2, 9)} level={"4"} style={{ padding: moderateScale(16), flexDirection: "row", margin: moderateScale(4), borderRadius: moderateScale(24), borderColor: colorStyle, backgroundColor: (sortBy == i?.value || isChecked(i?.value)) ? colors.lightLime : colors.transparent, borderWidth: 0.7 }}>
+                                    <Text style={{ fontFamily: fontFamily.proximaMedium, fontSize: textScale(12) }}>{i?.name}</Text>
+                                </Layout>
+                            </TouchableOpacity>
                         )
                     })
                 }
@@ -91,10 +135,10 @@ function SystemSearch(props: ISearch) {
                             let { title, sortArray, subTitle } = i || {};
                             if (sortArray?.length) {
                                 return (
-                                    <Layout style={{ margin: moderateScale(8), marginBottom: moderateScale(16) }}>
+                                    <Layout key={k} style={{ margin: moderateScale(8), marginBottom: moderateScale(16) }}>
                                         <Text style={{ fontFamily: fontFamily.proximaBold, fontSize: textScale(20), textTransform: "uppercase" }}>{title}</Text>
                                         <Text style={{ fontFamily: fontFamily.proximaMedium, fontSize: textScale(12), textTransform: "capitalize" }}>{subTitle}</Text>
-                                        <RenderChips sortArray={sortArray} />
+                                        <RenderChips sortArray={sortArray} title={title == "Sort"} />
                                     </Layout>
                                 )
                             } else {
