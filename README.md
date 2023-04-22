@@ -1,5 +1,5 @@
-# KnockApp
-Social Media Group Chat App
+# AsterApp
+Aster Movie App
 
 ## SetUp React Native Environment
 Refer to the attached link:
