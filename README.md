@@ -1,5 +1,5 @@
 # AsterApp
-Aster Movie App
+Simple Movie Listing App
 
 ## SetUp React Native Environment
 Refer to the attached link:
