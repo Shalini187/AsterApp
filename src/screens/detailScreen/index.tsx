@@ -73,7 +73,7 @@ const DetailScreen = ({ navigation, route }: any) => {
 
                 </Layout>
                 <Layout style={{ marginVertical: moderateScale(16) }}>
-                    <Text style={{ fontFamily: fontFamily.proximaMedium, fontSize: textScale(14), textAlign: "justify" }}>{overview}</Text>
+                    <Text style={{ fontFamily: fontFamily.proximaMedium, fontSize: textScale(14), textAlign: "justify" }}>{overview?.trim()}</Text>
                 </Layout>
                 <Layout style={{ marginVertical: moderateScale(8) }}>
                     <Text style={{ fontFamily: fontFamily.proximaBold, fontSize: textScale(14), textAlign: "justify" }}>
